@@ -1,0 +1,1240 @@
+<!--<div id="toShare" style="position:absolute;width:600px;height:685px;background:#111;z-index:999">
+    
+<div style="position:absolute;font-size:90px;left:30px;top:30px">5</div>
+
+
+
+
+<img src="assets/grid_blue.png" style="width:600px">
+
+<div style="text-align:center;padding-left:50px;padding-right:50px;font-size:18px">Can you rearrange the numbers to balance all 8 equations? I did it in just X moves!</div>
+<div style="text-align:center;opacity:.5;font-size:15px;margin-top:4px">Equate 8: A Math Puzzle Game</div>
+</div>
+-->
+
+
+<img *ngIf="sharePrompt" (click)="sharePrompt=false" class="animate__animated animate__infinite" [ngClass]="{'animate__pulse':userData.tutorial==36}"style="position:absolute;left:calc((100vw - min(50vh, 90vw)) / 2);top:calc((100vh - 1.43 * min(50vh, 90vw)) / 2 - 47px);width:50px;cursor:pointer;z-index:9999" src="assets/previous.png">
+
+<div *ngIf="steam" class="titlebarDrag"></div>
+
+<div *ngIf="steam" style="position:absolute;bottom:20px;right:20px;font-size:20px">
+
+<ion-icon (click)="toggleFullScreen()" class="hov" [name]="fullscreenState?'contract-outline':'expand-outline'" style="margin-right:5px"></ion-icon>
+
+<ion-icon (click)="quitGame()" class="hov" name="exit-outline"></ion-icon>
+
+</div>
+
+<ion-popover class="tutPop" trigger="donateConf" arrow="false" [isOpen]="popovers.donate" show-backdrop=false (didDismiss)="popovers.donate=false">
+  <ng-template>
+    <app-popover-content>
+<div style="padding: 5px 15px 15px 15px">
+
+ <ion-icon class="animate__animated animate__pulseBigger animate__infinite" style="float:right;opacity:1;font-size:30px;margin-top:-4px" [name]="'arrow-up-outline'" slot="end"></ion-icon>  
+
+<span style="font-size:20px;float:right;width:218px;margin-bottom:20px">
+        Donate to our non-profit to unlock unlimited levels and difficulties
+</span>
+
+
+</div>
+     </app-popover-content>
+  </ng-template>
+</ion-popover>
+
+<ion-popover class="sharing" arrow="false" show-backdrop=false alignment="middle" [isOpen]="sharePrompt" (didDismiss)="sharePrompt=false">
+
+  <ng-template>
+
+    <app-popover-content>
+        <!--
+<img (click)="sharePrompt=false" style="position:absolute;right:0;top:0;width:40px;cursor:pointer" src="assets/close.png">
+-->
+        <div style="padding:2px 10px 2px 10px">
+<!--
+      <ion-icon style="vertical-align:-8px;font-size:30px" name="share-social-outline" slot="end"></ion-icon><span style="font-size:20px"> Share Emoji</span>-->
+
+
+      <div style="text-align:center;font-size:30px">
+<!---->
+<img [src]="shareImg" style="margin-top:10px">
+
+        <!--<pre><span *ngIf="sharePrompt">{{shareImg}}</span></pre>-->
+
+<ion-button (click)="copyImgClip(shareImg);sharePrompt=false" style="vertical-align:middle;font-size:15px;height:40px"><ion-icon name="clipboard-outline"></ion-icon>&nbsp;Copy</ion-button>&nbsp;
+
+<span *ngIf="steam!==false">
+        <ion-button (click)="downImg(shareImg);sharePrompt=false" style="vertical-align:middle;font-size:15px;height:40px"><ion-icon name="image-outline"></ion-icon>&nbsp;Save</ion-button>
+</span>
+<span *ngIf="steam==false">
+    <ion-button (click)="mobileShare();sharePrompt=false" style="vertical-align:middle;font-size:15px;height:40px">SHARE &nbsp;<ion-icon [ngClass]="{'iosAdj':iOS}" [name]="iOS?'share-outline':'share-social-outline'"></ion-icon></ion-button>
+</span>
+<!--
+        &nbsp;<ion-button (click)="sharePrompt=false" style="vertical-align:middle;font-size:15px;height:40px"><ion-icon name="arrow-down-circle-outline"></ion-icon></ion-button>
+-->
+    </div><br></div>
+       </app-popover-content>
+  </ng-template>
+</ion-popover>
+
+<ion-popover [backdropDismiss]="false" class="tutPop" arrow="false" [isOpen]="popovers.generate" (didDismiss)="cancelGens($event)">
+  <ng-template>
+    <app-popover-content style="padding-left:20px;padding-right:20px;padding-top:15px;padding-bottom:15px" >
+<div style="text-align:center;line-height:30px">
+Min: <select style="border-color:white;background:transparent" (change)="genLvls()" [(ngModel)]="genLvl.min">
+<option *ngFor="let test of genNums" [value]="test">{{test}}</option>
+    </select>
+
+Max: <select (change)="genLvls()" style="border-color:white;background:transparent" [(ngModel)]="genLvl.max">
+<option *ngFor="let test of genNums" [value]="test">{{test}}</option>
+<option value="99">99</option>
+    </select>
+
+<div style="margin-top:5px">
+
+№ average is <select (change)="genLvls()" style="border-color:white;background:transparent" [(ngModel)]="genLvl.avgKind">
+<option value="max"><</option>
+<option value="min">></option>
+    </select>&nbsp; <select (change)="genLvls()" style="border-color:white;background:transparent" [(ngModel)]="genLvl.avg">
+<option value="1">1</option>
+<option value="5">5</option>
+<option value="10">10</option>
+<option value="15">15</option>
+<option value="20">20</option>
+<option value="20">25</option>
+<option value="30">30</option>
+<option value="40">40</option>
+<option value="50">50</option>
+    </select>
+</div>
+<!--
+<div style="margin-top:5px">
+<select (change)="genLvls()" style="border-color:white;background:transparent" [(ngModel)]="genLvl.uniqueKind">
+<option value="max">max</option>
+<option value="min">min</option>
+<option value="exact">exact</option>
+    </select>
+</div>
+-->
+
+<div style="text-align:center;margin-top:5px">
+Moves: <select style="border-color:white;background:transparent" [(ngModel)]="genLvl.moves">
+    <option value="0">0</option>
+<option value="1">1</option>
+<option value="2">2</option>
+<option value="3">3</option>
+<option value="4">4</option>
+<option value="5">5</option>
+<option value="6">6</option>
+<option value="7">7</option>
+<option value="8">8</option>
+    </select>
+
+    Unique: <select (change)="genLvls()" style="border-color:white;background:transparent" [(ngModel)]="genLvl.unique">
+<option value="9">9</option>
+<option value="8">8</option>
+<option value="7">7</option>
+    </select>
+</div>
+</div>
+
+
+<div style="margin-top:10px;text-align:center">
+    <select (change)="genLvls()" style="border-color:white;background:transparent" [(ngModel)]="genLvl.opKind">
+<option value="any">Any of</option>
+<option value="all">All of</option>
+<option value="only">Only</option>
+</select> the following:
+</div>
+<!--
+    <input type="checkbox" id="scales" name="scales" checked />
+    <label for="scales">Addition</label>
+-->
+<div style="text-align:center;margin:10px;margin-bottom:5px;line-height:30px">
+    <ion-checkbox (ionChange)="genLvls()" [(ngModel)]="genLvl.ops[0]" class="opVert"></ion-checkbox>&nbsp;Add&nbsp;
+    <ion-checkbox (ionChange)="genLvls()" [(ngModel)]="genLvl.ops[1]" class="opVert"></ion-checkbox>&nbsp;Sub&nbsp;
+    <ion-checkbox (ionChange)="genLvls()" [(ngModel)]="genLvl.ops[2]" class="opVert"></ion-checkbox>&nbsp;Mul
+    <br>
+    <ion-checkbox (ionChange)="genLvls()" [(ngModel)]="genLvl.ops[3]" class="opVert"></ion-checkbox>&nbsp;Div&nbsp;
+    <ion-checkbox (ionChange)="genLvls()" [(ngModel)]="genLvl.ops[4]" class="opVert"></ion-checkbox>&nbsp;Exp&nbsp;
+    <ion-checkbox (ionChange)="genLvls()" [(ngModel)]="genLvl.ops[5]" class="opVert"></ion-checkbox>&nbsp;Mod
+</div>
+<div>
+
+
+
+
+
+</div>
+<div style="text-align:center;margin-top:7px;color:rgb(0,215,0)" [ngClass]="{'redForce':genResults.length==0}"><i>{{genResults.length | number}} results</i><span *ngIf="genLvl.ops[5] && genLvl.unique==7">&nbsp;*</span></div>
+<!--
+ <ion-select label="Operators" placeholder="+-*/^%" [(ngModel)]="genLvl.ops" multiple=true>
+<ion-select-option value="+">+</ion-select-option>
+<ion-select-option value="-">-</ion-select-option>
+<ion-select-option value="*">×</ion-select-option>
+<ion-select-option value="/">÷</ion-select-option>
+<ion-select-option value="^">^</ion-select-option>
+<ion-select-option value="%">mod</ion-select-option>
+</ion-select>
+
+
+-->
+<div style="text-align:center;margin-top:10px">
+<ion-button (click)="cancelGens()" style="margin-right:20px"><b>Cancel</b></ion-button><ion-button (click)="loadLvls()" [ngClass]="{'halfopacNoPoint':genResults.length==0}"><b>Load</b></ion-button>
+</div>
+     </app-popover-content>
+  </ng-template>
+</ion-popover>
+
+ <ion-popover class="tutPop" arrow="false" [isOpen]="popovers.load" (didDismiss)="popovers.load=false">
+  <ng-template>
+    <app-popover-content style="padding-left:20px;padding-right:20px;padding-top:15px;padding-bottom:15px" >
+
+<div style="margin-bottom:5px;font-size:20px">Open Endless Level</div>
+Choose which level to load:
+  <ion-item class="smallMenuItem" style="margin-top:10px">
+<ion-label>Difficulty</ion-label>
+     <select style="border-color:white;background:transparent" [(ngModel)]="loadDiff">
+<option value="easy">Easy</option>
+<option value="medium">Medium</option>
+<option value="hard">Hard</option>
+<option value="mod">Modulo</option>
+    </select>
+  </ion-item>
+
+   <ion-item>
+    <ion-label>Level #</ion-label>
+      <input [(ngModel)]="loadNum" label="Number input" style="float:right;width:55px;background:transparent;border:1px solid white" type="number" placeholder="000">
+    </ion-item>
+<div style="text-align:center;margin-top:20px">
+<ion-button (click)="popovers.load=false" style="margin-right:20px"><b>Cancel</b></ion-button><ion-button (click)="gotoEndless()" [ngClass]="{'noPointer halfopac':!checkValidLvl()}"><b>LOAD</b></ion-button>
+</div>
+     </app-popover-content>
+  </ng-template>
+</ion-popover>
+
+<ion-popover arrow="false" class="tutPop" *ngIf="userData.tutorial!==-1 && tutDB[userData.tutorial] && tutViz" show-backdrop=false [trigger]="tutDB[userData.tutorial][3]" [backdropDismiss]="tutDB[userData.tutorial][5]" [side]="tutDB[userData.tutorial][4]=='mobileBottom'?(aspectRatio>1.1?'top':'bottom'):tutDB[userData.tutorial][4]" [alignment]="tutDB[userData.tutorial][1]?'end':'start'" [isOpen]="userData.tutorial!==-1" [ngClass]="{'noPointer':!tutDB[userData.tutorial][5],'tutPopUp':aspectRatio<1.1 && tutDB[userData.tutorial][5] && tutDB[userData.tutorial][3]=='','specialSwap':userData.tutorial==4}" (didDismiss)="incTut(undefined,undefined,undefined,true)">
+  <ng-template>
+    <app-popover-content>
+
+        <div style="padding: 15px 15px 15px 15px">
+
+<!--
+<ng-lottie [styles]="{maxWidth:(expressionLines[equalConv(i)]?'min(140px, 14vh)':'min(60px, 6vh)'),marginTop:expressionLines[equalConv(i)]?'15px':'0px'}" [width]="(expressionLines[equalConv(i)]?25:9.5)+'vmin'" [options]="{renderer:'svg',rendererSettings: {progressiveLoad: true,preserveAspectRatio: 'xMidYMid meet'},path:'assets/lottie/notequal.json', autoplay: true,loop: false}" (animationCreated)="animationCreated($event,getGridIndex(i))+'_1'"></ng-lottie>
+-->
+ <ion-icon [ngClass]="{'animate__animated animate__pulseBigger animate__infinite':!tutDB[userData.tutorial][5] && tutDB[userData.tutorial][2].slice(0,5)=='arrow'}" *ngIf="!tutDB[userData.tutorial][1] && !tutDB[userData.tutorial][2].includes('.json')" style="float:left;opacity:1;font-size:30px;margin-right:5px;margin-top:-2px" [name]="tutDB[userData.tutorial][2]" slot="end"></ion-icon>  
+
+<ion-icon [ngClass]="{'animate__animated animate__pulseBigger animate__infinite':!tutDB[userData.tutorial][5] && tutDB[userData.tutorial][2].slice(0,5)=='arrow'}" *ngIf="tutDB[userData.tutorial][1] && !tutDB[userData.tutorial][2].includes('.json')" style="float:right;opacity:1;font-size:30px;margin-top:-4px" [name]="tutDB[userData.tutorial][2]" slot="end"></ion-icon>
+
+<ng-lottie [ngStyle]="{'float':tutDB[userData.tutorial][1]?'right':'left'}" style="width:50px" *ngIf="tutDB[userData.tutorial][2].includes('.json')"
+      width="60px" 
+      [styles]="{maxWidth:'100px'}" 
+      [options]="{renderer:'svg',rendererSettings: {progressiveLoad: true,hideOnTransparent:android,viewBoxOnly:!android,className:'lottie-anim',clearCanvas:android, preserveAspectRatio: 'xMidYMid meet'},path:'assets/lottie/'+tutDB[userData.tutorial][2], 
+        autoplay: true,
+        loop: true
+      }">
+    </ng-lottie>
+
+
+<span [ngStyle]="{'font-size':android?'19px':'20px','margin-bottom':tutDB[userData.tutorial][2]=='information-circle-outline'?'0px':'10px','margin-top':tutDB[userData.tutorial][1]?'-8px':'-3px','width':tutDB[userData.tutorial][2].includes('.json')?'200px':'220px'}" [ngClass]="{'animate__animated animate__pulse animate__infinite':tutDB[userData.tutorial][2]==''}" style="float:right;width:220px">
+        {{tutDB[userData.tutorial][0]}}
+</span>
+    
+
+
+</div>
+    <ion-button *ngIf="tutDB[userData.tutorial][5]" class="animate__animated animate__pulse animate__infinite" (click)="incTut([],false,true);playSFX('pos.wav');haptic();" style="margin-left:10px;float:right;margin-right:20px;margin-bottom:10px;margin-top:10px" [color]="'dark'" fill="outline" size="medium"><ion-icon slot="end" name="chevron-forward-outline"></ion-icon>{{tutDB[userData.tutorial][7]?tutDB[userData.tutorial][7]:'NEXT'}}</ion-button>
+
+
+       </app-popover-content>
+  </ng-template>
+</ion-popover>
+
+<!----- END TUTORIAL ----->
+
+<!--
+<button (click)="getHint()" style="position:absolute">hint</button>--><!--<div style="display: flex; flex-direction: row; flex-wrap: wrap;margin-left:50px">
+  <span *ngFor="let tet of testing; let i=index" style="display: inline-block;margin-left:-20px;margin-right:-5px">
+    <ng-lottie 
+      [style]="'display: inline-block;margin-top:'+ydisp[i]*-1+'px;margin-left:'+xdisp[i]*-1+'px'"
+      width="15vw" 
+      [styles]="{maxWidth:'100px'}" 
+      [options]="{
+        path:'assets/lottbBie/'+i+'.json', 
+        autoplay: true,
+        loop: false
+      }" 
+      (animationCreated)="animationCreated($event,string(i))">
+    </ng-lottie>
+  </span>
+</div>
+-->
+<!--
+<div style="text-align:center;position:absolute;top:70vh;bottom:0;right:0;left:0;margin:auto;width:100vw;height:100vh">O</div>
+-->
+
+
+ <ion-popover class="debug" arrow="false" [isOpen]="popovers.debug" (didDismiss)="popovers.debug=false">
+  <ng-template>
+    <app-popover-content>
+<ion-item  class="smallMenuItem" (click)="newHint();" style="cursor:pointer">
+<ion-label>Hint</ion-label>
+    <ion-icon name="chevron-forward-outline" slot="end"></ion-icon>
+  </ion-item>
+<ion-item  class="smallMenuItem" (click)="setSolution();" style="cursor:pointer">
+<ion-label>Solution</ion-label>
+    <ion-icon name="chevron-forward-outline" slot="end"></ion-icon>
+  </ion-item>
+ <ion-item  class="smallMenuItem" (click)="monthReward();" style="cursor:pointer">
+ <ion-label>Month Reward</ion-label>
+    <ion-icon name="chevron-forward-outline" slot="end"></ion-icon>
+  </ion-item>
+ <ion-item  class="smallMenuItem" (click)="medalDebug(1)" style="cursor:pointer">
+<ion-label>Add 1 Medal</ion-label>
+    <ion-icon name="chevron-forward-outline" slot="end"></ion-icon>
+  </ion-item>
+
+ <ion-item  class="smallMenuItem" (click)="userData.medals[3]=userData.medals[3]+1;medalCalc()" style="cursor:pointer">
+ <ion-label>Add 1 Streak</ion-label>
+    <ion-icon name="chevron-forward-outline" slot="end"></ion-icon>
+  </ion-item>
+
+   <ion-item  class="smallMenuItem" (click)="resetStorage(true)" style="cursor:pointer">
+<ion-label>Wipe Storage</ion-label>
+    <ion-icon name="chevron-forward-outline" slot="end"></ion-icon>
+  </ion-item>
+<!--
+ <ion-item class="smallMenuItem" (click)="gamestate.numMoves=123" style="cursor:pointer">
+ <ion-label>Test</ion-label>
+    <ion-icon name="chevron-forward-outline" slot="end"></ion-icon>
+  </ion-item>
+-->
+
+     </app-popover-content>
+  </ng-template>
+</ion-popover>
+
+
+<div *ngIf="splash">
+
+
+<img class="splashLogo" src="assets/logo.png">
+<div class="titleSplash" style="font-size:60px;text-align:center;margin-top:10px"><img style="width:200px;vertical-align:-28px" src="assets/title.png"><ng-lottie class="animated-element" [style]="'vertical-align:-15px;display:inline-block'" [styles]="{maxWidth:'75px'}" class="numMoves" width="75px" [options]="{renderer:'svg',rendererSettings: {progressiveLoad: true,hideOnTransparent:android,viewBoxOnly:!android,className:'lottie-anim',clearCanvas:android, preserveAspectRatio: 'xMidYMid meet'},path:'assets/lottie/8.json', autoplay: true,loop: true}" ></ng-lottie>
+<div class="splashDesc" style="font-size:15px;padding-left:20px;padding-right:20px;max-width:400px;margin-left:auto;margin-right:auto">A math puzzle game of balancing 8 equations in a 3x3 number grid</div>
+
+<ion-button (click)="start()" class="lvlBtns animate__animated animate__pulseBig animate__infinite" id="nxtBtn" style="color:white;margin-left:0px;z-index:9999;margin-top:-40px" color="warning" size="large"><ion-icon slot="end" name="chevron-forward-outline"></ion-icon><b>Get Started</b></ion-button>
+
+
+<div style="font-size:15px;margin-top:15px">© 2025 <img src="assets/cmm.png" style="width:30px"> a 501(c)(3) non-profit</div>
+</div>
+
+<div class="dedi" style="position:absolute;bottom:80px;left:0px;right:0px;margin:auto;font-size:15px;text-align:center">Dedicated to my dad, George Jarvis</div>
+
+
+</div>
+<div *ngIf="!splash">
+<div *ngIf="gamestate.dailyDone" style="margin-top:100px">
+
+
+<div class="calendar hardware-accelerated" style="margin-top:-10px">
+    <div class="moCal" style="position:absolute;margin:auto;top:-53px;text-align:left;width:100vw;font-size:34px">{{currentDate | date:'MMMM'}}</div>
+    <div class="days">
+      <div *ngFor="let day of days" 
+           class="day" 
+           [class.empty]="day.empty" [class.today]="day.today">
+       <!---->
+        <div *ngIf="day.medal">
+
+             <ng-lottie class="animated-element" [style]="'display:inline-block;margin-top:1px;margin-bottom:-5px;margin-left:-10px;margin-right:-10px'" [styles]="{maxWidth:'60px'}" width="60px" [options]="{renderer:'svg',rendererSettings: {progressiveLoad: true,hideOnTransparent:android,viewBoxOnly:!android,className:'lottie-anim',clearCanvas:android, preserveAspectRatio: 'xMidYMid meet'},path:'assets/lottie/'+day.medal+'.json', autoplay: true,loop: day.today}" ></ng-lottie>
+
+        </div>
+<!--
+         <div *ngIf="day.medal" 
+           class="medal"
+           [class.gold]="day.medal === 'gold'"
+           [class.silver]="day.medal === 'silver'"
+           [class.bronze]="day.medal === 'bronze'">
+      </div>
+
+-->
+      </div>
+    </div>
+  </div>
+<div style="margin:auto;max-width:500px">
+<div style="padding:15px">
+<!--You earned a <span *ngIf="gamestate.numMoves<=medalThresh[0]">gold</span> <span *ngIf="gamestate.numMoves>medalThresh[0] && gamestate.numMoves<=medalThresh[1]">silver</span><span *ngIf="gamestate.numMoves>medalThresh[1]">bronze</span> medal for {{currentDate | date:'MMMM'}} {{currentDate | date:'d'| ordinalDate}}.--> <span>Earn {{userData.monthReward+mthThresh-userData.month.length}} more daily medal<span [hidden]="userData.monthReward+mthThresh-userData.month.length==1">s</span> this calendar month to unlock a new theme option.</span>
+
+<span [hidden]="!userData.donated">
+    Come back for a free new puzzle tomorrow or play another mode. 
+</span>
+
+<span [hidden]="userData.donated">
+
+ Come back for a free new puzzle tomorrow or make a one time donation to our non-profit to access thousands more puzzles instantly.
+
+</span>
+
+<div style="text-align:center;margin-top:10px">
+
+
+<ion-button *ngIf="!userData.donated" (click)="openLink()" class="lvlBtns"  id="nxtBtn" style="margin-left:0px;z-index:9999" color="dark" fill="outline" size="large"><ion-icon slot="end" name="help-circle-outline"></ion-icon><b>INFO</b>&nbsp;</ion-button>
+
+<!--[ngClass]="{'bronzeTxt':gamestate.numMoves>medalThresh[1],'silTxt':gamestate.numMoves>medalThresh[0] && gamestate.numMoves<medalThresh[1],'goldTxt':gamestate.numMoves<=medalThresh[0]}"-->
+<!---->
+<ion-button *ngIf="userData.donated" (click)="genShare()" class="lvlBtns"  id="nxtBtn" style="z-index:9999" color="dark" fill="outline" size="large"><ion-icon slot="end" [ngClass]="{'iosAdj':iOS}" name="share-outline"></ion-icon><b>SHARE</b></ion-button>
+
+<ion-button *ngIf="userData.donated" (click)="menuBtn()" class="lvlBtns"  id="nxtBtn" style="margin-left:20px;z-index:9999" color="dark" fill="outline" size="large"><ion-icon slot="end" name="chevron-forward-outline"></ion-icon><b>MORE</b></ion-button>
+
+
+
+
+<ion-button *ngIf="!userData.donated" (click)="moreLvls()" class="animate__animated animate__pulseBig animate__infinite lvlBtns"  id="nxtBtn" style="margin-left:30px;z-index:9999" color="dark" fill="outline" size="large"><ion-icon slot="end" name="chevron-forward-outline"></ion-icon><ng-lottie *ngIf="!userData.donated" style="position:absolute;right:0px" [styles]="{maxWidth:'90px'}" width="90px" [options]="{renderer:'svg',rendererSettings: {progressiveLoad: true,hideOnTransparent:android,viewBoxOnly:!android,className:'lottie-anim',clearCanvas:android, preserveAspectRatio: 'xMidYMid meet'},path:'assets/lottie/confetti.json', autoplay: true,loop: false}" ></ng-lottie><b>MORE</b>&nbsp;</ion-button>
+</div></div>
+</div>
+<div id="bigStreak" style="width:100vw;text-align:center;margin-left:-10px;margin-top:-85px;pointer-events:none !important">
+<ng-lottie [style]="'display:inline-block'" [styles]="{maxWidth:'260px',opacity:'.95'}" width="260px" [options]="{renderer:'svg',rendererSettings: {progressiveLoad: true,hideOnTransparent:android,viewBoxOnly:!android,className:'lottie-anim',clearCanvas:android, preserveAspectRatio: 'xMidYMid meet'},path:'assets/lottie/streak_full.json', autoplay: true,loop: true}" ></ng-lottie>
+
+<div style="position:absolute;width:100vw;margin-top:-162px;padding-left:2px;font-size:60px"><span style="letter-spacing:-6px">{{userData.streak}}</span>
+
+<div style="margin-top:-35px;font-weight:100;line-height:40px"><span style="font-size:25px;">DAY<span [hidden]="userData.streak==1">S</span></span><div style="margin-top:-10px;font-size:30px">{{streakType}} Streak</div></div>
+</div>
+
+
+</div>
+<div id="smallStreak" style="width:100vw;text-align:center;margin-left:-100px;margin-top:-50px;pointer-events:none !important">
+<ng-lottie [style]="'display:inline-block'" [styles]="{maxWidth:'280px',opacity:'.95'}" width="140px" [options]="{renderer:'svg',rendererSettings: {progressiveLoad: true,hideOnTransparent:android,viewBoxOnly:!android,className:'lottie-anim',clearCanvas:android, preserveAspectRatio: 'xMidYMid meet'},path:'assets/lottie/streak_full.json', autoplay: true,loop: true}" ></ng-lottie>
+
+<div style="position:absolute;width:100vw;margin-top:-92px;padding-right:1px;font-size:30px"><span style="letter-spacing:-6px">{{userData.streak}}</span>
+
+<div style="margin-top:-25px;font-weight:100;line-height:40px"><span style="font-size:15px;">DAY<span [hidden]="userData.streak==1">S</span></span><div style="position:absolute;left:140px;width:100vw;bottom:18px;font-size:20px">{{streakType}} Streak</div></div>
+</div>
+
+
+</div>
+
+
+
+</div>
+
+
+
+<ion-menu (ionDidClose)="menuClose()" side="end" content-id="menu" menuId="menu" swipeGesture="false" class="menu-override">
+
+
+<div class="blackBck iOS_header" style="height:50px;border-bottom:2px solid rgb(220,220,220)" ><!--[ngClass]="{'iosHeader':device==1 && !steam}"-->
+<div (click)="menuBackBtn()" style="width:100%;height:70px;position:absolute;margin-top:-53px;z-index:99"></div>
+
+<ion-icon class="closeBtn" style="position:absolute;top:30px;right:30px;font-size:44px;cursor:pointer;z-index:99" (click)="menuBackBtn()" [name]="menuState=='main'?'close-outline':'chevron-back-outline'" slot="start"></ion-icon>
+<!--
+    <div style="position:absolute;cursor:pointer;font-size:30px;margin-top:15px;margin-left:13px;opacity:.7;z-index:999" class="iOS_scroll"><ion-icon (click)="menuBackBtn()" [name]="menuState=='main'?'close-outline':'chevron-back-outline'" slot="start"></ion-icon></div>
+-->
+<div class="titleMenu" style="text-align:right;font-size:25px;position:absolute;right:15px;font-weight:700;margin-top:16px;z-index:9999">Equate 8  &nbsp;<span class="subtitleMenu" style="font-size:13px;opacity:.6">a CMM game</span>
+</div>
+</div>
+
+<div style="background:rgb(25,25,25);height:101px" class="membrane"></div>
+<ion-content class="panY menuContent">
+
+<div class="panY scrollMenu" style="overflow:scroll">
+
+  <div *ngIf="menuState==='challenges'">
+
+  <ion-item [id]="'chall_'+i" (click)="loadChallenge(chall)" [hidden]="gamestate.mode[0]==chall.title && gamestate.mode[1]==chall.i" *ngFor="let chall of challenges; let i=index;" style="cursor:pointer">
+
+<ng-lottie  *ngIf="userData.gamestateArchive[chall.title+(chall.i?chall.i:'')] && userData.gamestateArchive[chall.title+(chall.i?chall.i:'')].medal && userData.gamestateArchive[chall.title+(chall.i?chall.i:'')].lvlWon" [style]="'display:inline-block;margin-top: -3px;margin-right: -10px;margin-bottom: -5px;vertical-align: -10px;'" width="50px" [options]="{renderer:'svg',rendererSettings: {progressiveLoad: true,hideOnTransparent:android,viewBoxOnly:!android,className:'lottie-anim',clearCanvas:android, preserveAspectRatio: 'xMidYMid meet'},path:'assets/lottie/'+userData.gamestateArchive[chall.title+(chall.i?chall.i:'')].medal+'.json', autoplay: false,loop: false}" ></ng-lottie>
+
+
+
+
+<ion-label [ngClass]="{'strikethru':userData.gamestateArchive[chall.title+(chall.i?chall.i:'')] && userData.gamestateArchive[chall.title+(chall.i?chall.i:'')].medal && userData.gamestateArchive[chall.title+(chall.i?chall.i:'')].lvlWon,'halfopac':medalCombos[chall.medals[0]]<chall.medals[1]}"><b><!--Challenge #{{i+1}}-->{{chall.title}}<span *ngIf="chall.i && chall.i>1">&nbsp;#{{chall.i}}</span></b></ion-label>
+
+
+    <ion-icon [hidden]="medalCombos[chall.medals[0]]<chall.medals[1]" name="chevron-forward-outline" slot="end"></ion-icon>
+<div *ngIf="medalCombos[chall.medals[0]]<chall.medals[1]" class="req">
+
+
+      <ng-lottie class="opacChall" *ngIf="chall.medals[0]==2" [style]="'display:inline-block;margin-top: -3px;margin-right:-40px;margin-bottom: -5px;vertical-align: -10px;'"  width="50px" [options]="{renderer:'svg',rendererSettings: {progressiveLoad: true,hideOnTransparent:android,viewBoxOnly:!android,className:'lottie-anim',clearCanvas:android, preserveAspectRatio: 'xMidYMid meet'},path:'assets/lottie/gold.json', autoplay: false,loop: false}" ></ng-lottie>
+
+    <ng-lottie class="opacChall" *ngIf="chall.medals[0]==2 || chall.medals[0]==0" [style]="'display:inline-block;margin-top: -3px;margin-right: -40px;margin-bottom: -5px;vertical-align: -10px;'"  width="50px" [options]="{renderer:'svg',rendererSettings: {progressiveLoad: true,hideOnTransparent:android,viewBoxOnly:!android,className:'lottie-anim',clearCanvas:android, preserveAspectRatio: 'xMidYMid meet'},path:'assets/lottie/'+(chall.medals[0]==2?'silver':'gold')+'.json', autoplay: false,loop: false}" ></ng-lottie>
+
+
+    <ng-lottie class="opacChall" [style]="'display:inline-block;margin-top: -3px;margin-right: -10px;margin-bottom: -5px;vertical-align: -10px;'"  width="50px" [options]="{renderer:'svg',rendererSettings: {progressiveLoad: true,preserveAspectRatio: 'xMidYMid meet'},path:'assets/lottie/'+(chall.medals[0]==2?'bronze':(chall.medals[0]==0?'silver':(chall.medals[0]==3?'streak_full':'gold')))+'.json', autoplay: false,loop: false}" ></ng-lottie>&nbsp;
+    <span [ngClass]="{'bronzeTxt':chall.medals[0]==2,'silTxt':chall.medals[0]==0,'goldTxt':chall.medals[0]==1}" style="font-size:25px;vertical-align:5px;margin-left:-5px"><!--<span style="font-size:12px;vertical-align:10px">{{medalCombos[chall.medals[0]]}}/</span>--><b>{{chall.medals[1]}}</b></span>
+</div>
+
+
+  </ion-item>
+
+  </div>
+
+
+
+  <div *ngIf="menuState==='cosmetics'" class="themes">
+
+<div style="padding:15px;margin-bottom:-5px">Every {{mthThresh}} medals earned in a calendar month unlocks a random setting</div>
+<ion-item-divider class="themeDiv">
+      <ion-label>Grid Color</ion-label>
+</ion-item-divider>
+
+  <ion-item class="themeMenuItem">
+    <ion-icon name="grid-outline"  slot="start"></ion-icon>
+     <i>Grid</i>: <ion-select label="Grid Color" (ionChange)="haptic(0);writeStorage()" [interfaceOptions]="{header:'Grid Color',subHeader:'Unlock New Options With Monthly Streaks'}" [(ngModel)]="userData.color.grid">
+<ng-container *ngFor="let color of colors | keyvalue">
+<ion-select-option *ngIf="userData.cosmetics.grid.includes(color.key)" [value]="color.key">{{color.value}}</ion-select-option> 
+</ng-container>
+
+
+       
+
+    </ion-select>
+  </ion-item>
+
+<ion-item-divider class="themeDiv">
+      <ion-label>Number Color</ion-label>
+</ion-item-divider>
+
+   <ion-item class="themeMenuItem">
+    <ion-icon name="color-palette" slot="start"></ion-icon>
+     <i>Numbers</i>:<ion-select label="Number Color" [interfaceOptions]="{header:'Number Color',subHeader:'Unlock New Options With Monthly Streaks'}" [(ngModel)]="userData.color.num">
+
+<ng-container *ngFor="let color of colors | keyvalue">
+<ion-select-option *ngIf="userData.cosmetics.num.includes(color.key)" [value]="color.key">{{color.value}}</ion-select-option> 
+</ng-container>
+   
+    </ion-select>
+  </ion-item>
+
+  <ion-item-divider class="themeDiv">
+      <ion-label>Operator Color</ion-label>
+</ion-item-divider>
+
+     <ion-item class="themeMenuItem">
+    <i>Operators</i>:<ion-icon name="add-outline" slot="start"></ion-icon>
+     <ion-select label="Operator Color" [interfaceOptions]="{header:'Operator Color',subHeader:'Unlock New Options With Monthly Streaks'}" [(ngModel)]="userData.color.op">
+  <ng-container *ngFor="let color of colors | keyvalue">
+<ion-select-option *ngIf="userData.cosmetics.op.includes(color.key)" [value]="color.key">{{color.value}}</ion-select-option> 
+</ng-container>
+
+
+    </ion-select>
+  </ion-item>
+
+
+    <ion-item-divider class="themeDiv">
+      <ion-label>Lock Color</ion-label>
+</ion-item-divider>
+
+  <ion-item class="themeMenuItem">
+    <ion-icon name="lock-closed-outline" slot="start"></ion-icon>
+    <i>Lock</i>:<ion-select label="Operator Color" [interfaceOptions]="{header:'Lock Color',subHeader:'Unlock New Options With Monthly Streaks'}" [(ngModel)]="userData.color.lock">
+  <ng-container *ngFor="let color of colors | keyvalue">
+<ion-select-option *ngIf="userData.cosmetics.lock.includes(color.key)" [value]="color.key">{{color.value}}</ion-select-option> 
+</ng-container>
+
+
+    </ion-select>
+  </ion-item>
+
+<ion-item-divider class="themeDiv">
+      <ion-label>Background Color</ion-label>
+</ion-item-divider>
+
+     <ion-item class="themeMenuItem">
+    <ion-icon name="color-fill-outline" slot="start"></ion-icon>
+    <i>Background</i>:<ion-select label="Background Color" [interfaceOptions]="{header:'Background Color',subHeader:'Unlock New Options With Monthly Streaks'}" [(ngModel)]="userData.color.bck">
+  <ng-container *ngFor="let color of colors | keyvalue">
+<ion-select-option *ngIf="userData.cosmetics.bck.includes(color.key)" [value]="color.key">{{color.value=='White'?'Black':color.value}}</ion-select-option> 
+</ng-container>
+    </ion-select>
+  </ion-item>
+
+
+  <ion-item-divider class="themeDiv">
+      <ion-label>Animation</ion-label>
+</ion-item-divider>
+
+     <ion-item class="themeMenuItem">
+    <ion-icon name="balloon-outline" slot="start"></ion-icon>
+     <i>Animation</i>:<ion-select (ionChange)="changeAnim()" label="Background Animation" [interfaceOptions]="{header:'Background Animation',subHeader:'Unlock New Options With Monthly Streaks'}" [(ngModel)]="userData.color.anim">
+
+
+  <ng-container *ngFor="let anim of anims">
+<ion-select-option *ngIf="userData.cosmetics.anim.includes(anim)" [value]="anim">{{anim}}</ion-select-option> 
+</ng-container>
+    </ion-select>
+  </ion-item>
+
+
+<div style="text-align:center;margin-top:20px">
+    <!--
+  <ion-badge color="light" *ngIf="userData.medals[2]<4" style="padding:8px;z-index:9999;position:absolute;right:42px;margin-top:-17px;font-size:18px"><b>3</b><!--&nbsp;<div class="medal gold" style="display:inline-block;height:15px;width:15px"></div>
+  <ng-lottie [style]="'display:inline-block;margin-top: -10px;margin-right: -6px;margin-bottom: -5px;vertical-align: -10px;'"  width="35px" [options]="{renderer:'svg',rendererSettings: {progressiveLoad: true,preserveAspectRatio: 'xMidYMid meet'},path:'assets/lottie/'+'gold'+'.json', autoplay: false,loop: false}" ></ng-lottie>
+  </ion-badge>
+
+<ng-lottie [style]="'display:inline-block;margin-top: -10px;margin-right: -6px;margin-bottom: -5px;vertical-align: -10px;'"  width="35px" [options]="{renderer:'svg',rendererSettings: {progressiveLoad: true,preserveAspectRatio: 'xMidYMid meet'},path:'assets/lottie/'+'gold'+'.json', autoplay: false,loop: false}" ></ng-lottie>
+-->
+  <ion-button size="large" style="height:45px !important" color="tertiary" (click)="randomize()" [ngClass]="{'halfOpac':userData.cosmetics.tot<=6}"><b>Randomize</b></ion-button></div>
+  </div>
+
+
+<div [hidden]="menuState!=='endless'">
+
+<ion-item (click)="loadEndless('easy');haptic(0);" style="cursor:pointer">
+<ion-label ><b>Easy</b></ion-label>
+    <ion-icon [hidden]="userData.medals[endlessMedals.medium[0]]<endlessMedals.medium[1] && userData.medals[endlessMedals.random[0]]<endlessMedals.random[1]"  name="chevron-forward-outline" slot="end"></ion-icon>
+        <ion-button color="tertiary" style="margin-right:10px" class="animated pulse infinite" *ngIf="userData.medals[endlessMedals.medium[0]]<endlessMedals.medium[1] && userData.medals[endlessMedals.random[0]]<endlessMedals.random[1]"><b>{{userData.gamestateArchive.endless.length==0?'PLAY NOW':'RESUME'}}</b></ion-button>
+  </ion-item>
+
+  <ion-item (click)="loadEndless('medium');haptic(0);" style="cursor:pointer">
+<ion-label [ngClass]="{'halfopac':medalCombos[2]<endlessMedals.medium[1]}"><b>Medium</b></ion-label>
+
+
+    <ion-icon [hidden]="medalCombos[2]<endlessMedals.medium[1]" name="chevron-forward-outline" slot="end"></ion-icon>
+<div *ngIf="medalCombos[2]<endlessMedals.medium[1]" class="req">
+
+    <ng-lottie class="opacChall"  *ngIf="endlessMedals.medium[0]==2" [style]="'display:inline-block;margin-top: -3px;margin-right: -40px;margin-bottom: -5px;vertical-align: -10px;'"  width="50px" [options]="{renderer:'svg',rendererSettings: {progressiveLoad: true,hideOnTransparent:android,viewBoxOnly:!android,className:'lottie-anim',clearCanvas:android, preserveAspectRatio: 'xMidYMid meet'},path:'assets/lottie/gold.json', autoplay: false,loop: false}" ></ng-lottie>
+
+    <ng-lottie class="opacChall"  *ngIf="endlessMedals.medium[0]==2 || endlessMedals.medium[0]==0" [style]="'display:inline-block;margin-top: -3px;margin-right: -40px;margin-bottom: -5px;vertical-align: -10px;'"  width="50px" [options]="{renderer:'svg',rendererSettings: {progressiveLoad: true,hideOnTransparent:android,viewBoxOnly:!android,className:'lottie-anim',clearCanvas:android, preserveAspectRatio: 'xMidYMid meet'},path:'assets/lottie/'+(endlessMedals.medium[0]==2?'silver':'gold')+'.json', autoplay: false,loop: false}" ></ng-lottie>
+    <ng-lottie class="opacChall"  [style]="'display:inline-block;margin-top: -3px;margin-right: -6px;margin-bottom: -5px;vertical-align: -10px;'"  width="50px" [options]="{renderer:'svg',rendererSettings: {progressiveLoad: true,hideOnTransparent:android,viewBoxOnly:!android,className:'lottie-anim',clearCanvas:android, preserveAspectRatio: 'xMidYMid meet'},path:'assets/lottie/'+(endlessMedals.medium[0]==2?'bronze':(endlessMedals.medium[0]==0?'silver':'gold'))+'.json', autoplay: false,loop: false}" ></ng-lottie>&nbsp;
+    <span [ngClass]="{'bronzeTxt':endlessMedals.medium[0]==2,'silTxt':endlessMedals.medium[0]==0,'goldTxt':endlessMedals.medium[0]==1}" style="font-size:25px;vertical-align:5px"><b>{{endlessMedals.medium[1]}}</b></span>
+</div>
+
+
+  </ion-item>
+
+  <ion-item (click)="loadEndless('hard');haptic(0);" style="cursor:pointer">
+<ion-label [ngClass]="{'halfopac':medalCombos[0]<endlessMedals.hard[1]}"><b>Hard</b></ion-label>
+    
+    <ion-icon [hidden]="medalCombos[0]<endlessMedals.hard[1]" name="chevron-forward-outline" slot="end"></ion-icon>
+<div *ngIf="medalCombos[0]<endlessMedals.hard[1]" class="req">
+
+    <ng-lottie class="opacChall"  *ngIf="endlessMedals.medium[0]==2 || endlessMedals.medium[0]==0" [style]="'display:inline-block;margin-top: -3px;margin-right: -40px;margin-bottom: -5px;vertical-align: -10px;'"  width="50px" [options]="{renderer:'svg',rendererSettings: {progressiveLoad: true,hideOnTransparent:android,viewBoxOnly:!android,className:'lottie-anim',clearCanvas:android, preserveAspectRatio: 'xMidYMid meet'},path:'assets/lottie/'+(endlessMedals.hard[0]==2?'silver':'gold')+'.json', autoplay: false,loop: false}" ></ng-lottie>
+
+    <ng-lottie class="opacChall"  [style]="'display:inline-block;margin-top: -3px;margin-right: -6px;margin-bottom: -5px;vertical-align: -10px;'"  width="50px" [options]="{renderer:'svg',rendererSettings: {progressiveLoad: true,hideOnTransparent:android,viewBoxOnly:!android,className:'lottie-anim',clearCanvas:android, preserveAspectRatio: 'xMidYMid meet'},path:'assets/lottie/'+(endlessMedals.hard[0]==2?'bronze':(endlessMedals.hard[0]==0?'silver':'gold'))+'.json', autoplay: false,loop: false}" ></ng-lottie>&nbsp;
+    <span [ngClass]="{'bronzeTxt':endlessMedals.hard[0]==2,'silTxt':endlessMedals.hard[0]==0,'goldTxt':endlessMedals.hard[0]==1}" style="font-size:25px;vertical-align:5px"><b>{{endlessMedals.hard[1]}}</b></span>
+</div>
+  </ion-item>
+
+  <ion-item (click)="loadEndless('mod');haptic(0);" style="cursor:pointer">
+<ion-label [ngClass]="{'halfopac':userData.medals[endlessMedals.mod[0]]<endlessMedals.mod[1]}"><b>Modulo</b></ion-label>
+  
+    <ion-icon [hidden]="userData.medals[endlessMedals.mod[0]]<endlessMedals.mod[1]" name="chevron-forward-outline" slot="end"></ion-icon>
+<div *ngIf="userData.medals[endlessMedals.mod[0]]<endlessMedals.mod[1]" class="req">
+    <ng-lottie class="opacChall"  [style]="'display:inline-block;margin-top: -3px;margin-right: -6px;margin-bottom: -5px;vertical-align: -10px;'"  width="50px" [options]="{renderer:'svg',rendererSettings: {progressiveLoad: true,hideOnTransparent:android,viewBoxOnly:!android,className:'lottie-anim',clearCanvas:android, preserveAspectRatio: 'xMidYMid meet'},path:'assets/lottie/'+(endlessMedals.mod[0]==2?'bronze':(endlessMedals.mod[0]==0?'silver':'gold'))+'.json', autoplay: false,loop: false}" ></ng-lottie>&nbsp;
+    <span [ngClass]="{'bronzeTxt':endlessMedals.mod[0]==2,'silTxt':endlessMedals.mod[0]==0,'goldTxt':endlessMedals.mod[0]==1}" style="font-size:25px;vertical-align:5px"><b>{{endlessMedals.mod[1]}}</b></span>
+</div>
+  </ion-item>
+
+  <ion-item (click)="loadEndless('random');haptic(0);" style="cursor:pointer">
+<ion-label [ngClass]="{'halfopac':userData.medals[endlessMedals.random[0]]<endlessMedals.random[1]}" style="margin-bottom:10px"><b>Random</b></ion-label>
+    
+    <ion-icon [hidden]="userData.medals[endlessMedals.random[0]]<endlessMedals.random[1]" name="chevron-forward-outline" slot="end"></ion-icon>
+<div *ngIf="userData.medals[endlessMedals.random[0]]<endlessMedals.random[1]" class="req">
+    <ng-lottie class="opacChall" [style]="'display:inline-block;margin-top: -3px;margin-right: -6px;margin-bottom: -5px;vertical-align: -10px;'"  width="50px" [options]="{renderer:'svg',rendererSettings: {progressiveLoad: true,hideOnTransparent:android,viewBoxOnly:!android,className:'lottie-anim',clearCanvas:android, preserveAspectRatio: 'xMidYMid meet'},path:'assets/lottie/'+(endlessMedals.random[0]==2?'bronze':(endlessMedals.random[0]==0?'silver':(endlessMedals.random[0]==3?'streak_full':'gold')))+'.json', autoplay: false,loop: false}" ></ng-lottie>&nbsp;
+    <span [ngClass]="{'bronzeTxt':endlessMedals.random[0]==2,'silTxt':endlessMedals.random[0]==0,'goldTxt':endlessMedals.random[0]==1}" style="font-size:25px;vertical-align:5px"><b>{{endlessMedals.random[1]}}</b></span>
+</div>
+  </ion-item>
+      <ion-item-divider>
+      <ion-label>Other</ion-label>
+</ion-item-divider>
+
+    <ion-item class="smallMenuItem">
+    <ion-icon name="shuffle-outline" slot="start"></ion-icon><ion-label>Shuffle</ion-label>
+
+<ion-toggle (ionChange)="userData.settings.shuffle=!userData.settings.shuffle;haptic(0);writeStorage()" [ngModel]="userData.settings.shuffle"></ion-toggle>
+  </ion-item>
+
+
+
+
+
+    <ion-item  class="smallMenuItem" (click)="popovers.load=true" style="cursor:pointer">
+  <ion-icon name="share-outline" slot="start" ></ion-icon><ion-label>Open Level</ion-label>
+    <ion-icon name="chevron-forward-outline" slot="end"></ion-icon>
+  </ion-item>
+
+      <ion-item  class="smallMenuItem" (click)="loadGens()" style="cursor:pointer">
+  <ion-icon name="color-wand-outline" slot="start" ></ion-icon><ion-label>Generate</ion-label>
+        <ion-icon [hidden]="userData.medals[endlessMedals.mod[0]]<genLock" name="chevron-forward-outline" slot="end"></ion-icon>
+<div *ngIf="userData.medals[endlessMedals.mod[0]]<genLock" class="req" style="margin-right:0px !important">
+    <ng-lottie class="opacChall"  [style]="'display:inline-block;margin-top: -3px;margin-right: -12px;margin-bottom: -5px;vertical-align: -10px;'"  width="50px" [options]="{renderer:'svg',rendererSettings: {progressiveLoad: true,hideOnTransparent:android,viewBoxOnly:!android,className:'lottie-anim',clearCanvas:android, preserveAspectRatio: 'xMidYMid meet'},path:'assets/lottie/'+(endlessMedals.mod[0]==2?'bronze':(endlessMedals.mod[0]==0?'silver':'gold'))+'.json', autoplay: false,loop: false}" ></ng-lottie>&nbsp;
+    <span class="goldTxt" style="font-size:25px;vertical-align:5px"><b>{{genLock}}</b></span>
+</div>
+  </ion-item>
+  
+<!--
+   <ion-item  class="smallMenuItem" (click)="newHint();" style="cursor:pointer">
+  <ion-icon name="bulb-outline" slot="start" ></ion-icon><ion-label>Get Hint</ion-label>
+    <ion-icon name="chevron-forward-outline" slot="end"></ion-icon>
+  </ion-item>
+
+     <ion-item  class="smallMenuItem" (click)="getHint();" style="cursor:pointer">
+  <ion-icon name="bulb-outline" slot="start" ></ion-icon><ion-label>Old Hint</ion-label>
+    <ion-icon name="chevron-forward-outline" slot="end"></ion-icon>
+  </ion-item>
+-->
+<!--
+  <ion-item  class="smallMenuItem" (click)="skipEndless()" style="cursor:pointer">
+  <ion-icon name="play-skip-forward" slot="start" ></ion-icon><ion-label>Skip</ion-label>
+    <ion-icon name="chevron-forward-outline" slot="end"></ion-icon>
+  </ion-item>
+-->
+
+</div>
+
+<div [hidden]="menuState!=='main'">
+
+      <ion-item *ngIf="gamestate.mode!=='daily' && userData.tutorial==-1" (click)="reloadDaily()" style="cursor:pointer">
+    <ion-icon name="calendar-number-outline" slot="start"></ion-icon><ion-label >Daily Puzzle</ion-label>
+
+    <ion-icon *ngIf="userData.donated" name="chevron-forward-outline" slot="end"></ion-icon>
+
+ 
+  </ion-item>
+
+
+  <ion-item [ngClass]="{'halfopac':userData.donated && userData.tutorial>0 && userData.tutorial<15}" (click)="endless()" style="z-index:99;cursor:pointer">
+    <ion-icon [ngClass]="{'halfopac':userData.tutorial!==-1 || !userData.donated}" [name]="!userData.donated?'lock-closed-outline':'infinite'" slot="start"></ion-icon><ion-label [ngClass]="{'halfopac':!userData.donated}" >Endless</ion-label>
+    <ion-icon *ngIf="userData.donated" name="chevron-forward-outline" slot="end"></ion-icon>
+
+<ng-lottie id="donateConf" *ngIf="!userData.donated" style="position:absolute;right:20px" [styles]="{maxWidth:'70px'}" width="70px" [options]="{renderer:'svg',rendererSettings: {progressiveLoad: true,hideOnTransparent:android,viewBoxOnly:!android,className:'lottie-anim',clearCanvas:android, preserveAspectRatio: 'xMidYMid meet'},path:'assets/lottie/confetti.json', autoplay: true,loop: true}" ></ng-lottie>
+
+<ion-badge id="donate" [ngClass]="{'halfopac':userData.tutorial==9 || userData.tutorial==13}" *ngIf="!userData.donated" style="background:#6370ff;padding:8px;margin-right:10px" ><b>DONATE</b><!--DONATE-->
+</ion-badge>
+
+  </ion-item>
+<div *ngIf="userData.tutorial==32" class="membrane" style="z-index:2;" (click)="incTut(32)"></div>
+
+
+
+<ion-item id="chall" [ngClass]="{'halfopac':userData.tutorial==13}" (click)="challBtn()" style="cursor:pointer">
+    <ion-icon [name]="'barbell-outline'" slot="start"></ion-icon><ion-label>Challenges&nbsp;</ion-label><ion-badge *ngIf="userData.newChall[1]" class="animate__animated animate__pulseBig animate__infinite" style="padding:5px;margin-right:2px" color="danger"><b>NEW</b></ion-badge>
+    <ion-icon *ngIf="!userData.newChall[1]" name="chevron-forward-outline" slot="end"></ion-icon>
+  </ion-item>
+
+<ion-item *ngIf="gamestate.mode!=='blitz'" id="chall" [ngClass]="{'halfopac':userData.tutorial<15 && userData.tutorial!==-1}" (click)="blitz(false,true)" style="cursor:pointer;margin-bottom:5px;cursor:pointer">
+    <ion-icon [name]="'flash-outline'" slot="start"></ion-icon><ion-label>Blitz</ion-label>
+<!--*ngIf="gamestate.blitzAttempt!==today" class="animate__animated animate__pulseBig animate__infinite"-->
+    <ion-badge *ngIf="gamestate.blitzAttempt!==today && !blitzSuppress" class="animate__animated animate__pulseBig animate__infinite" style="padding:5px;margin-right:8px;background:rgb(3,160,176)"><b>DAILY</b></ion-badge>
+
+    <ion-badge *ngIf="blitzSuppress" class="animate__animated animate__pulseBig animate__infinite" style="padding:5px;margin-right:8px;background:rgb(3,160,176);opacity:0.8"><b>Coming Soon</b></ion-badge>
+    
+    <ion-icon *ngIf="gamestate.blitzAttempt==today && !blitzSuppress" name="chevron-forward-outline" slot="end"></ion-icon>
+
+
+<!--<ion-badge *ngIf="!debugMode" style="padding:5px;margin-right:0px;opacity:0.5" color="tertiary"><b>Coming Soon</b></ion-badge>
+-->
+  </ion-item>
+<!---->
+<ion-item-divider>
+      <ion-label class="smLabel"> Settings </ion-label>
+</ion-item-divider>
+
+<ion-item (click)="themeBtn()" [ngClass]="{'disabledTutorial':userData.tutorial!==-1}" style="cursor:pointer;margin-top:-5px">
+    <ion-icon [name]="userData.tutorial!==-1?'lock-closed-outline':'color-palette'" slot="start"></ion-icon><ion-label>Themes</ion-label>
+    <ion-icon name="chevron-forward-outline" slot="end"></ion-icon>
+  </ion-item>
+
+
+
+    <ion-item *ngIf="iOS || android">
+    <ion-icon [name]="'pulse-outline'" slot="start"></ion-icon><ion-label>Vibration</ion-label>
+<ion-toggle color="tertiary" (ionChange)="userData.settings.haptic=!userData.settings.haptic;haptic(1);writeStorage()" [ngModel]="userData.settings.haptic"></ion-toggle>
+  </ion-item>
+
+<ion-item style="margin-bottom:5px">
+    <ion-icon [name]="userData.settings.mute?'volume-mute-outline':'volume-high-outline'" slot="start"></ion-icon><ion-label>Sound FX</ion-label>
+
+<ion-toggle color="tertiary" (ionChange)="userData.settings.mute=!userData.settings.mute;haptic(0);writeStorage()" [ngModel]="!userData.settings.mute"></ion-toggle>
+  </ion-item>
+
+    <ion-item-divider>
+      <ion-label class="smLabel"> More</ion-label>
+</ion-item-divider>
+
+    <ion-item *ngIf="gamestate.mode!=='blitz'" [ngClass]="{'halfopacNoPoint':userData.tutorial==9 || userData.tutorial==13 || gamestate.dailyDone || gamestate.lvlWon || (userData.tutorial>0 && userData.tutorial<13)}">
+    <ion-icon id="ezmode" [name]="'map-outline'" slot="start"></ion-icon><ion-label>Snap Mode</ion-label>
+<ion-toggle color="tertiary" (ngModelChange)="toggleEasyMode($event)" [(ngModel)]="userData.settings.easyMode"></ion-toggle>
+  </ion-item>
+
+<!--
+ <ion-item (click)="moreGames()" style="cursor:pointer">
+  <ion-icon name="game-controller-outline" slot="start"></ion-icon><ion-label>More Games</ion-label>
+    <ion-icon name="chevron-forward-outline" slot="end"></ion-icon>
+  </ion-item>
+-->
+  <ion-item *ngIf="debugMode" (click)="debugMenu()" style="cursor:pointer">
+  <ion-icon name="bug-outline" slot="start"></ion-icon><ion-label>Debug Menu</ion-label>
+    <ion-icon name="chevron-forward-outline" slot="end"></ion-icon>
+  </ion-item>
+<!--
+  <ion-item [ngClass]="{'halfopacNoPoint':isOrig()}" class="smallMenuItem" (click)="resetPuzzle();" style="cursor:pointer">
+  <ion-icon name="refresh-outline" slot="start" ></ion-icon><ion-label>Restart Puzzle</ion-label>
+    <ion-icon name="chevron-forward-outline" slot="end"></ion-icon>
+  </ion-item>
+-->
+
+ <ion-item *ngIf="!(gamestate.mode!=='daily' && userData.tutorial==-1) || gamestate.mode=='blitz'" class="smallMenuItem" (click)="openLink('https://blog.cinqmarsmedia.com/reinventing-magic-squares-equate-8-1b7b731e4ae7')" style="cursor:pointer">
+  <ion-icon name="newspaper-outline" slot="start" ></ion-icon><ion-label>Magic Squares</ion-label>
+    <ion-icon name="open-outline" slot="end"></ion-icon>
+  </ion-item>
+
+<!---->
+  <ion-item class="smallMenuItem" (click)="menuState='more';" style="cursor:pointer">
+  <ion-icon name="ellipsis-horizontal-circle-outline" slot="start" ></ion-icon><ion-label>More</ion-label>
+
+    <ion-icon name="chevron-forward-outline" slot="end"></ion-icon>
+  </ion-item>
+
+  
+
+
+
+<!--
+      <ion-item-divider>
+      <ion-label> Debug</ion-label>
+</ion-item-divider>
+
+ <ion-item  class="smallMenuItem" (click)="getHint();" style="cursor:pointer">
+  <ion-icon name="bulb-outline" slot="start" ></ion-icon><ion-label>Hint</ion-label>
+    <ion-icon name="chevron-forward-outline" slot="end"></ion-icon>
+  </ion-item>
+
+ <ion-item  class="smallMenuItem" (click)="monthReward();monthReward()" style="cursor:pointer">
+  <ion-icon name="bug-outline" slot="start" ></ion-icon><ion-label>Month Reward</ion-label>
+    <ion-icon name="chevron-forward-outline" slot="end"></ion-icon>
+  </ion-item>
+ <ion-item  class="smallMenuItem" (click)="medalDebug()" style="cursor:pointer">
+  <ion-icon name="bug-outline" slot="start" ></ion-icon><ion-label>Add 3 Medals</ion-label>
+    <ion-icon name="chevron-forward-outline" slot="end"></ion-icon>
+  </ion-item>
+-->
+<!--
+<div style="position:absolute;right:10px;bottom:10px">
+<button (click)="getHint()">hint</button><button (click)="userData.bestStreak=userData.bestStreak+1">strk</button><button style="margin-left:10px;margin-right:10px" (click)="monthReward()">mth rew</button><button (click)="medalDebug()">medal</button>
+</div>
+-->
+
+
+
+
+</div>
+
+<div *ngIf="menuState=='more'">
+
+     <ion-item *ngIf="gamestate.mode!=='daily' && userData.tutorial==-1 && gamestate.mode!=='blitz'" class="smallMenuItem" (click)="openLink('https://blog.cinqmarsmedia.com/reinventing-magic-squares-equate-8-1b7b731e4ae7')" style="cursor:pointer">
+  <ion-icon name="newspaper-outline" slot="start" ></ion-icon><ion-label>Magic Squares</ion-label>
+    <ion-icon name="open-outline" slot="end"></ion-icon>
+  </ion-item>
+
+
+    <ion-item class="smallMenuItem" (click)="openLink();" style="cursor:pointer">
+  <ion-icon name="game-controller-outline" slot="start" ></ion-icon><ion-label>Other Games</ion-label>
+    <ion-icon name="open-outline" slot="end"></ion-icon>
+  </ion-item>
+
+
+
+   <ion-item class="smallMenuItem" (click)="openLink('https://buttondown.com/cinqmarsmedia')" style="cursor:pointer">
+  <ion-icon name="mail-outline" slot="start" ></ion-icon><ion-label>Newsletter</ion-label>
+    <ion-icon name="open-outline" slot="end"></ion-icon>
+  </ion-item>
+
+
+<ion-item class="smallMenuItem" (click)="donateLink()" style="cursor:pointer">
+  <ion-icon name="gift-outline" slot="start" ></ion-icon><ion-label>Donate</ion-label>
+    <ion-icon name="open-outline" slot="end"></ion-icon>
+  </ion-item>
+
+  <ion-item class="smallMenuItem" (click)="openLink('https://github.com/cinqmarsmedia');" style="cursor:pointer">
+  <ion-icon name="logo-github" slot="start" ></ion-icon><ion-label>GitHub</ion-label>
+    <ion-icon name="open-outline" slot="end"></ion-icon>
+  </ion-item>
+
+
+   <ion-item *ngIf="restoreDonation && !userData.donated && iOS" class="smallMenuItem" (click)="restorePurchase();" style="cursor:pointer">
+  <ion-icon name="wallet-outline" slot="start" ></ion-icon><ion-label>Restore IAP</ion-label>
+    <ion-icon name="chevron-forward-outline" slot="end"></ion-icon>
+  </ion-item>
+
+
+
+   <ion-item class="smallMenuItem" (click)="resetStorage();" style="cursor:pointer">
+  <ion-icon name="refresh-outline" slot="start" ></ion-icon><ion-label>Reset Data</ion-label>
+    <ion-icon name="chevron-forward-outline" slot="end"></ion-icon>
+  </ion-item>
+<!--
+  puzzles solved? Stats? Best N away? other things? DONATE. 
+-->
+
+<div (click)="dc()" style="text-align:center;margin-top:20px">
+<img src="assets/devil.png" style="width:100px"><br>
+The Devil's Calculator <ion-icon style="vertical-align:bottom" name="arrow-forward-circle-outline"></ion-icon><br>
+<span style="font-size:11px">PAX 10 Best Indie Games of 2019</span>
+</div>
+</div>
+
+
+
+
+
+</div>
+
+
+
+
+</ion-content>
+
+<div *ngIf="menuState!=='closed'" class="menuBottom" style="position:absolute;bottom:85px;">
+<div class="medalsMenu" style="padding-left:20px;padding-right:8px;padding-top:20px">
+   <ng-lottie [style]="'display:inline-block'" [styles]="{maxWidth:'150px'}" width="120px" [options]="{renderer:'svg',rendererSettings: {progressiveLoad: true,hideOnTransparent:android,viewBoxOnly:!android,className:'lottie-anim',clearCanvas:android, preserveAspectRatio: 'xMidYMid meet'},path:'assets/lottie/'+'silver'+'.json', autoplay: false,loop: false}" ></ng-lottie>
+   <div class="silTxt medalMenuNum" [style]="'position:absolute;margin-left:'+(57-string(userData.medals[1]).length*7)+'px;font-size:28px'">{{userData.medals[1]}}</div>
+  <ng-lottie [style]="'display:inline-block;margin-left:-50px;margin-right:-50px'" [styles]="{maxWidth:'150px'}" width="120px" [options]="{renderer:'svg',rendererSettings: {progressiveLoad: true,hideOnTransparent:android,viewBoxOnly:!android,className:'lottie-anim',clearCanvas:android, preserveAspectRatio: 'xMidYMid meet'},path:'assets/lottie/'+'gold'+'.json', autoplay: false,loop: false}" ></ng-lottie>
+  <div class="goldTxt medalMenuNum" [style]="'position:absolute;margin-left:'+(127-string(userData.medals[2]).length*7)+'px;font-size:28px'">{{userData.medals[2]}}</div>
+ <ng-lottie [style]="'display:inline-block'" [styles]="{maxWidth:'150px'}" width="120px" [options]="{renderer:'svg',rendererSettings: {progressiveLoad: true,hideOnTransparent:android,viewBoxOnly:!android,className:'lottie-anim',clearCanvas:android, preserveAspectRatio: 'xMidYMid meet'},path:'assets/lottie/'+'bronze'+'.json', autoplay: false,loop: false}" ></ng-lottie>
+  <div class="bronzeTxt medalMenuNum" [style]="'position:absolute;margin-left:'+(199-string(userData.medals[0]).length*7)+'px;font-size:28px'">{{userData.medals[0]}}</div>
+</div>
+</div>
+
+<div class="menuStreak" [hidden]="userData.medals[3]<1 && userData.blitzBest<1"><span style="font-size:13px">Best Streaks:</span>  <ng-lottie [style]="'display:inline-block;vertical-align:-8px;margin-right:-5px'" [styles]="{maxWidth:'150px'}" width="30px" [options]="{renderer:'svg',rendererSettings: {progressiveLoad: true,hideOnTransparent:android,viewBoxOnly:!android,className:'lottie-anim',clearCanvas:android, preserveAspectRatio: 'xMidYMid meet'},path:'assets/lottie/'+'streak_full'+'.json', autoplay: false,loop: false}" ></ng-lottie>{{userData.medals[3]}}&nbsp;<ion-icon style="vertical-align:-2px;color:#FFFF8F" [name]="'flash'"></ion-icon>{{userData.blitzBest}}</div>
+
+
+</ion-menu>
+
+<ion-badge *ngIf="userData.newChall[0]" style="position:absolute;right:15px;top:20px;border-radius:200px;width:15px;height:15px" color="danger">&nbsp;&nbsp;&nbsp;&nbsp;</ion-badge>
+
+
+
+<ion-icon [hidden]="menuState!=='closed' || menuHidden" class="menuIcon icon animate__animated animate__fadeInLeft" id="menu" (click)="menuBtn()" name="menu-outline"></ion-icon>
+
+
+
+<div *ngIf="!gamestate.dailyDone" >
+
+
+<div [hidden]="menuState!=='closed'" class="lvlTitle animate__animated animate__fadeInLeft title" >
+<span [hidden]="gamestate.mode!=='daily' || (userData.tutorial>-1 && userData.tutorial<12)">
+{{currentDate | date:'MMMM'}} {{currentDate | date:'d'| ordinalDate}}
+</span>
+<span *ngIf="userData.tutorial>-1 && userData.tutorial<10">
+Tutorial
+</span>
+
+<span [hidden]="gamestate.mode!=='endless'">
+
+<span (click)="menuState='endless';menuCtrl.open()" *ngIf="userData.diff=='random'">
+  Random <ion-icon style="vertical-align:-2px;font-size:18px" name="caret-down-outline"></ion-icon>
+</span>
+
+
+<span *ngIf="userData.diff!=='random'" (click)="menuState='endless';menuCtrl.open()">
+<span >{{userData.diff | titlecase}}</span> <span><ng-lottie [style]="'vertical-align:-3px;margin-right:0px;margin-left:10px;display:inline-block'" [styles]="{maxWidth:'20px'}" class="whiteFilter" width="20px" [options]="{renderer:'svg',rendererSettings: {progressiveLoad: true,hideOnTransparent:android,viewBoxOnly:!android,className:'lottie-anim',clearCanvas:android, preserveAspectRatio: 'xMidYMid meet'},path:'assets/lottie/hash2.json', autoplay: true,loop: false}" ></ng-lottie>{{userData.endlessIndx[userData.diff]+1}}<ion-icon style="vertical-align:-2px;font-size:18px" name="caret-down-outline"></ion-icon>
+</span>
+</span>
+
+
+</span>
+
+<span (click)="openChallenges()" [hidden]="gamestate.mode=='endless' || gamestate.mode=='daily' || gamestate.mode=='gen' || gamestate.mode=='blitz'">
+
+<span>{{gamestate.mode[0]}}</span>
+<span *ngIf="gamestate.mode[1]">
+    <ng-lottie [style]="'vertical-align:-3px;margin-right:0px;margin-left:10px;display:inline-block'" [styles]="{maxWidth:'20px'}" class="whiteFilter" width="20px" [options]="{renderer:'svg',rendererSettings: {progressiveLoad: true,hideOnTransparent:android,viewBoxOnly:!android,className:'lottie-anim',clearCanvas:android, preserveAspectRatio: 'xMidYMid meet'},path:'assets/lottie/hash2.json', autoplay: true,loop: false}" ></ng-lottie>{{gamestate.mode[1]}}
+
+
+
+</span>
+
+
+</span>
+
+
+<span (click)="blitzInfo()" [hidden]="gamestate.mode!=='blitz'" style="vertical-align:center"><ion-icon *ngIf="gamestate.dailyBlitz" style="vertical-align:-2px" name="calendar-outline" slot="start"></ion-icon>
+Blitz № {{userData.blitzScore+1}} <span *ngIf="blitzMoves>1" style="font-size:12px;vertical-align:2px">(<i>{{blitzMoves}} moves</i>)</span>
+
+</span>
+
+<span (click)="genInfo()" [hidden]="gamestate.mode!=='gen'">
+{{userData.genIndx + 1 | number}} of {{genResults.length | number}}
+
+</span>
+
+
+</div>
+
+<div>
+<ng-lottie *ngIf="userData.settings.easyMode" width="80px" class="easyLoop" style="position:absolute;margin-left:5px;margin-top:10px" [styles]="{maxWidth:'min(200px, 20vh)'}" [style]="'filter:hue-rotate('+userData.color.lock+'deg)'" [options]="{renderer:'svg',rendererSettings: {progressiveLoad: true,hideOnTransparent:android,viewBoxOnly:!android,className:'lottie-anim',clearCanvas:android, preserveAspectRatio: 'xMidYMid meet'},path:'assets/lottie/highlight4.json', autoplay: true,loop: false}"></ng-lottie>
+<div id="ezMde" (click)="toggleEasyMode()" *ngIf="userData.settings.easyMode" class="moveCorner" style="position:absolute;left:20px;top:28px;line-height:20px;text-align:center;cursor:pointer">snap<br>mode</div>
+
+<div *ngIf="gamestate.mode=='blitz'" style="position:absolute;left:20px;top:40px;line-height:2px;text-align:center;cursor:pointer">
+    <div class="animate__animated hardware-accelerated animate__headShake" style="margin-bottom:20px;font-size:30px">{{userData.blitzBest}}</div>
+
+    best
+</div>
+
+<div *ngIf="!userData.settings.easyMode && gamestate.mode!=='blitz'" class="moveCorner" style="position:absolute;left:20px;top:28px;line-height:2px;text-align:center;cursor:pointer">
+<!--filter:hue-rotate('+userData.color.moves+'deg)'-->
+
+
+
+<div [ngClass]="{'numMovesCont':renderCanvas}" style="margin-top:0" (click)="toggleEasyMode()">
+<ng-lottie [style]="'vertical-align:'+ydisp[(gamestate.numMoves>9?string(gamestate.numMoves)[0]:gamestate.numMoves)]*.5+'px;display:inline-block'" [width]="renderCanvas?'60px':'34px'" [styles]="{maxWidth:renderCanvas?'60px':'34px'}" class="numMoves" [options]="{renderer:(renderCanvas?'canvas':'svg'),rendererSettings: {progressiveLoad: true,hideOnTransparent:android,viewBoxOnly:!android,className:'lottie-anim',clearCanvas:android, preserveAspectRatio: 'xMidYMid meet'},path:'assets/lottie/'+(gamestate.numMoves>9?string(gamestate.numMoves)[0]:gamestate.numMoves)+'.json', autoplay: true,loop: false}" ></ng-lottie>
+
+<ng-lottie *ngIf="gamestate.numMoves>9" [ngClass]="{'numMovesCanvas':renderCanvas}" [width]="renderCanvas?'60px':'34px'" [style]="'vertical-align:'+ydisp[string(gamestate.numMoves)[1]]*.5+'px;display:inline-block;margin-left:-15px'" [styles]="{maxWidth:renderCanvas?'60px':'34px'}" class="numMoves" [options]="{renderer:(renderCanvas?'canvas':'svg'),rendererSettings: {progressiveLoad: true,hideOnTransparent:android,viewBoxOnly:!android,className:'lottie-anim',clearCanvas:android, preserveAspectRatio: 'xMidYMid meet'},path:'assets/lottie/'+string(gamestate.numMoves)[1]+'.json', autoplay: true,loop: false}" ></ng-lottie>
+<ng-lottie *ngIf="gamestate.numMoves>99" [style]="'vertical-align:'+ydisp[string(gamestate.numMoves)[2]]*.5+'px;display:inline-block;margin-left:-15px'" [styles]="{maxWidth:renderCanvas?'60px':'33px'}" class="numMoves" width="35px" [options]="{renderer:'svg',rendererSettings: {progressiveLoad: true,hideOnTransparent:android,viewBoxOnly:!android,className:'lottie-anim',clearCanvas:android, preserveAspectRatio: 'xMidYMid meet'},path:'assets/lottie/'+string(gamestate.numMoves)[2]+'.json', autoplay: true,loop: false}" ></ng-lottie>
+
+</div>
+
+
+
+  <br><span [ngClass]="{'numMovesCont':renderCanvas}" id="moves" style="font-size:12px;"> move<span [hidden]="gamestate.numMoves==1">s</span></span>
+</div>
+</div>
+
+<div id="gamegrid" *ngIf="showGrid" [class]="getGridClasses()" class="op-grid hardware-accelerated" [style.--hue-rotation]="userData.color.grid + 'deg'">
+
+
+  <ng-container *ngFor="let op of gamestate.opsGrid; let i=index; trackBy: trackByFn">
+  
+
+    <div id="drgble" *ngIf="op==''" 
+      (touchLongPress)="lock(i,true)"
+      [ngClass]="{'noPointer':userData.tutorial!==-1 && isTutCellDisabled(i) || gamestate.isLost,'nosnap':!mobile && (userData.settings.easyMode && gamestate.solution[getGridIndex(i)]==gamestate.numGrid[getGridIndex(i)][0]),'halfopacNoPoint':userData.tutorial>-1 && gamestate.focus.length>0 && !gamestate.focus.includes(i)}" 
+      [ngStyle]="{'grid-area':'n'+(getGridIndex(i)+1)}" 
+      class="grid-cell num-cell hardware-accelerated" 
+      [swappable]="!((userData.settings.easyMode && gamestate.solution[getGridIndex(i)]==gamestate.numGrid[getGridIndex(i)][0]) || gamestate.locked.includes(i))"
+      [touchSwappable]="!((userData.settings.easyMode && gamestate.solution[getGridIndex(i)]==gamestate.numGrid[getGridIndex(i)][0]) || gamestate.locked.includes(i))" 
+      [hideOriginalOnDrag]="true"
+      [swapIndex]="getGridIndex(i)" 
+      (swap)="onSwap($event,i)" 
+      (click)="onNumClick(i)" 
+      style="margin-top:0px;">
+
+
+
+     <ng-lottie [id]="'opGrid_lock' + i" *ngIf="((userData.settings.easyMode || (gamestate.mode=='blitz' && gamestate.isLost)) && gamestate.solution[getGridIndex(i)]==gamestate.numGrid[getGridIndex(i)][0]) || gamestate.locked.includes(i)" [width]="(renderCanvas?58:39)+'vmin'" style="position:absolute;margin-left:10px" [styles]="{maxWidth:renderCanvas?'min(300px, 30vh)':'min(200px, 20vh)'}" [style]="'filter:hue-rotate('+userData.color.lock+'deg)'" [options]="{renderer:(renderCanvas?'canvas':'svg'),rendererSettings: {progressiveLoad: true,hideOnTransparent:android,viewBoxOnly:!android,className:'lottie-anim',clearCanvas:android, preserveAspectRatio: 'xMidYMid meet'},path:'assets/lottie/highlight4.json', autoplay: true,loop: false}"></ng-lottie>
+
+<div [ngClass]="{'twothirdsopac':(userData.settings.easyMode && gamestate.solution[getGridIndex(i)]==gamestate.numGrid[getGridIndex(i)][0]) || gamestate.locked.includes(i)}">
+<div>
+    <!--[width]="(renderCanvas?27:18)+'vmin'"-->
+<ng-lottie [id]="'opGrid_' + i" *ngIf="gamestate.numGrid[getGridIndex(i)][0]<10" [ngClass]="{'whiteFilter':userData.color.num=='-1'}" width="18vmin" [style]="'margin-top:'+ydisp[gamestate.numGrid[getGridIndex(i)][0]]*-1+'px;filter:hue-rotate('+userData.color.num+'deg)'" [styles]="{maxWidth:false?'min(150px, 150vh)':'min(100px, 10vh)'}" [options]="{renderer:(false?'canvas':'svg'),rendererSettings: {progressiveLoad: true,hideOnTransparent:android,viewBoxOnly:!android,className:'lottie-anim',clearCanvas:android, preserveAspectRatio: 'xMidYMid meet'},path:'assets/lottie/'+gamestate.numGrid[getGridIndex(i)][0]+'.json', autoplay: true,loop: false}" (animationCreated)="animationCreated($event,gamestate.numGrid[getGridIndex(i)][0]+'_'+string(gamestate.numGrid[getGridIndex(i)][1])+'_0')"></ng-lottie>
+</div>
+
+  <div *ngIf="gamestate.numGrid[getGridIndex(i)][0]>=10" style="margin-top:0">
+<!--'leftDigitCanvas':renderCanvas,
+[width]="(renderCanvas?25:18)+'vmin'"
+
+-->
+<ng-lottie [ngClass]="{'whiteFilter':userData.color.num=='-1' || hint==i}" [style]="'margin-top:'+ydisp[string(gamestate.numGrid[getGridIndex(i)])[0][0]]*-1+'px;filter:hue-rotate('+userData.color.num+'deg)'" [styles]="{maxWidth:false?'min(150px, 150vh)':'min(100px, 10vh)'}" class="leftDigit" width="18vmin" [options]="{renderer:(false?'canvas':'svg'),rendererSettings: {progressiveLoad: true,hideOnTransparent:android,viewBoxOnly:!android,className:'lottie-anim',clearCanvas:android, preserveAspectRatio: 'xMidYMid meet'},path:'assets/lottie/'+string(gamestate.numGrid[getGridIndex(i)])[0][0]+'.json', autoplay: true,loop: false}" (animationCreated)="animationCreated($event,string(gamestate.numGrid[getGridIndex(i)][0])[0]+'_'+string(gamestate.numGrid[getGridIndex(i)][1])+'_0')"></ng-lottie>
+
+   <!--[width]="(renderCanvas?25:18)+'vmin'"-->
+<ng-lottie class="rightDigit" [ngClass]="{'whiteFilter':userData.color.num=='-1' || hint==i}" [style]="'margin-top:'+ydisp[string(gamestate.numGrid[getGridIndex(i)][0])[1]]*-1+'px;filter:hue-rotate('+userData.color.num+'deg)'" [styles]="{maxWidth:false?'min(150px, 150vh)':'min(100px, 10vh)'}" width="18vmin" [options]="{renderer:(false?'canvas':'svg'),rendererSettings: {progressiveLoad: true,hideOnTransparent:android,viewBoxOnly:!android,className:'lottie-anim',clearCanvas:android, preserveAspectRatio: 'xMidYMid meet'},path:'assets/lottie/'+string(gamestate.numGrid[getGridIndex(i)][0])[1]+'.json', autoplay: true,loop: false}" (animationCreated)="animationCreated($event,string(gamestate.numGrid[getGridIndex(i)][0])[1]+'_'+string(gamestate.numGrid[getGridIndex(i)][1])+'_1')"></ng-lottie>
+</div>
+
+</div>
+
+
+
+  </div>
+
+ 
+
+    <div *ngIf="op!==''" [id]="'opGrid_' + i" [ngClass]="{'rotcc':i==8,'rotc':i==18,'ninetydeg':i==15 || i==17 || i==19}" class="op-cell hardware-accelerated" [ngStyle]="{'grid-area':'op'+getOpGridIndex(i)}" style="margin-left:.3vw">
+
+<span>      
+<span [hidden]="op=='='" style="pointer-events:none">
+<img class="svg hardware-accelerated" [ngClass]="{'whiteFilter':userData.color.op=='-1','opSmaller':op=='%','opBigger':op=='^'}" [style]="'filter:hue-rotate('+userData.color.op+'deg)'" style="width:9vmin;max-width:min(55px, 5vh)" [src]="'assets/ops/'+(op=='%'?'mod':(op=='/'?'div':(op=='^'?'pow':(op=='+'?'plus':(op=='*'?'mult':(op=='-'?'minus':op))))))+'.svg'">
+
+</span>
+</span>
+<span *ngIf="op=='='">
+
+<div class="animate__animated hardware-accelerated" [ngClass]="{'animate__infinite':!expressionLines[equalConv(i)] && update && lineCount==7,'animate__headShake':!expressionLines[equalConv(i)] && update}">
+<ng-lottie class="hardware-accelerated" [styles]="{maxWidth:(expressionLines[equalConv(i)]?'min(140px, 14vh)':'min(60px, 6vh)'),marginTop:expressionLines[equalConv(i)]?'15px':'0px'}" [width]="(expressionLines[equalConv(i)]?25:9.5)+'vmin'" [options]="{renderer:(android && !expressionLines[equalConv(i)]?'canvas':'svg'),rendererSettings: {progressiveLoad: true,hideOnTransparent:android,viewBoxOnly:!android,className:'lottie-anim',clearCanvas:android, preserveAspectRatio: 'xMidYMid meet'},path:'assets/lottie/'+(expressionLines[equalConv(i)]?'equal':'notequal')+'.json', autoplay: true,loop: false}" (animationCreated)="animationCreated($event,getGridIndex(i))+'_1'"></ng-lottie>
+</div>
+</span>
+</div>
+  </ng-container>
+  <!--
+  <div class="lines">
+    <div class="horizontal-1 grid-horizontal-line" [ngClass]="getGridLineClass(0)"></div>
+    <div class="horizontal-2 grid-horizontal-line" [ngClass]="getGridLineClass(1)"></div>
+    <div class="horizontal-3 grid-horizontal-line" [ngClass]="getGridLineClass(2)"></div>
+    <div class="vertical-1 grid-vertical-line" [ngClass]="getGridLineClass(3)"></div>
+    <div class="vertical-2 grid-vertical-line" [ngClass]="getGridLineClass(4)"></div>
+    <div class="vertical-3 grid-vertical-line" [ngClass]="getGridLineClass(5)"></div>
+    <div class="diagonal-1 grid-diagonal-line" [ngClass]="getGridLineClass(7)"></div>
+    <div class="diagonal-2 grid-diagonal-line" [ngClass]="getGridLineClass(6)"></div>
+  </div>
+-->
+
+
+
+</div>
+
+<ion-badge (click)="confirmSkipTut()" class="skipBadge" (click)="skipTutorial()" [ngClass]="{'halfopacNoPoint':userData.tutorial==36,'halfopac':userData.tutorial==8}" *ngIf="menuState=='closed' && userData.tutorial>0 && userData.tutorial<9 || (userData.tutorial==13 && !gamestate.lvlWon && menuState=='closed')">SKIP TUTORIAL</ion-badge>
+
+<div *ngIf="gamestate.mode=='blitz' && !gamestate.isLost" class="medalEle hardware-accelerated" style="margin-top:120px">
+<div *ngIf="!blitzAtta">
+<ion-icon [style]="'font-size:7vh;vertical-align:35px;color:#FFFF8F;margin-right:'+(blitzMoves - gamestate.numMoves==1?-30:-15)+'px'" name="flash-outline" slot="start"></ion-icon>
+<ng-lottie class="whiteFilter" [style]="'display:inline-block;vertical-align:27px;'" [styles]="{maxWidth:'85px'}" width="10vh" [options]="{renderer:'svg',rendererSettings: {progressiveLoad: true,hideOnTransparent:android,viewBoxOnly:!android,className:'lottie-anim',clearCanvas:android, preserveAspectRatio: 'xMidYMid meet'},path:'assets/lottie/'+(blitzMoves - gamestate.numMoves)+'.json', autoplay: true,loop: true}" ></ng-lottie><div style="margin-top:-30px">
+move<span [hidden]="blitzMoves==1">s</span> left</div>
+</div>
+<div *ngIf="blitzAtta" style="font-size:28px">
+    {{blitzAtta}}
+</div>
+
+</div>
+
+<div class="medalEle hardware-accelerated" style="margin-top:150px" *ngIf="gamestate.isLost || gamestate.ezLost && !userData.donated && userData.settings.easyMode">
+    <ion-button (click)="restartEZ()" color="tertiary" class="animated pulse infinite" size="large">RESTART</ion-button>
+</div>
+
+<div *ngIf="gamestate.mode=='gen'" style="margin-top:110px;text-align:center">
+
+    <div>
+    <span>min:{{genLvl.min}} max:{{genLvl.max}} <span style="font-size:20px">{{genLvl.ops[0]?"+":""}}{{genLvl.ops[1]?"-":""}}{{genLvl.ops[2]?"×":""}}{{genLvl.ops[3]?"÷":""}}{{genLvl.ops[4]?"^":""}}</span>{{genLvl.ops[5]?"r":""}} ({{genLvl.opKind}})<br>avg {{genLvl.avgKind=='max'?'<':'>'}}{{genLvl.avg}} unique:{{genLvl.unique}} moves:{{genLvl.moves}}</span>
+</div><br>
+
+<div style="magin-top:30px !important">
+
+    <ion-button id="nxtPuzz" (click)="loadGens()" class="lvlBtns" id="nxtBtn" style="margin-top:-5px;margin-left:10px;margin-right:30px" color="dark" fill="outline" size="large"><ion-icon slot="end" name="color-wand-outline"></ion-icon><b>Regen</b></ion-button>
+
+
+    <ion-button id="nxtPuzz" (click)="nxtGen()" [ngClass]="{'halfopacNoPoint':genResults.length==userData.genIndx + 1}" class="lvlBtns" id="nxtBtn" style="margin-top:-5px;margin-left:10px" color="dark" fill="outline" size="large"><ion-icon slot="end" name="chevron-forward-outline"></ion-icon><b>NEXT</b></ion-button>
+</div>
+</div>
+
+<div class="medalEle hardware-accelerated" *ngIf="!gamestate.isLost && !(gamestate.ezLost && !userData.donated && userData.settings.easyMode) && gamestate.mode!=='blitz' && gamestate.mode!=='gen'" [style]="'margin-top:'+(gamestate.lvlWon?'80px':'100px')">
+
+
+
+<ng-lottie [style]="'display:inline-block;height:min(18vh,150px)'" [styles]="{maxWidth:'150px'}" width="18vh"  [options]="{renderer:(renderCanvas?'canvas':'svg'),rendererSettings: {progressiveLoad: true,hideOnTransparent:android,viewBoxOnly:!android,className:'lottie-anim',clearCanvas:android, preserveAspectRatio: 'xMidYMid meet'},path:'assets/lottie/'+(((gamestate.numMoves<medalThresh[0] || gamestate.lvlWon && gamestate.numMoves==medalThresh[0]) && !userData.settings.easyMode && !gamestate.ezAttempt)?'gold':(((gamestate.numMoves<medalThresh[1] || gamestate.lvlWon && !userData.settings.easyMode && gamestate.numMoves==medalThresh[1]) && !userData.settings.easyMode && !gamestate.ezAttempt)?'silver':'bronze'))+'.json', autoplay: true,loop: true}" ></ng-lottie>
+<!---->
+<ng-lottie *ngIf="!gamestate.lvlWon && gamestate.numMoves<medalThresh[1] && (userData.settings.easyMode && !gamestate.isLost) || (!gamestate.ezAttempt && !gamestate.lvlWon && gamestate.numMoves<medalThresh[1])" [ngClass]="{'bronzeColor':userData.settings.easyMode ,'silColor':gamestate.numMoves>=medalThresh[0] && !userData.settings.easyMode ,'goldColor':gamestate.numMoves<medalThresh[0] && !iOS && !userData.settings.easyMode ,'iosGoldCol':gamestate.numMoves<medalThresh[0] && iOS&& !userData.settings.easyMode}" [style]="'display:inline-block;vertical-align:27px;margin-left:-20px;'" [styles]="{maxWidth:'85px'}" width="10vh" [options]="{renderer:'svg',rendererSettings: {progressiveLoad: true,hideOnTransparent:android,viewBoxOnly:!android,className:'lottie-anim',clearCanvas:android, preserveAspectRatio: 'xMidYMid meet'},path:'assets/lottie/'+(gamestate.numMoves<medalThresh[0]?(medalThresh[0]-gamestate.numMoves):(medalThresh[1]-gamestate.numMoves))+'.json', autoplay: true,loop: (gamestate.numMoves<medalThresh[0]?(medalThresh[0]-gamestate.numMoves):(medalThresh[1]-gamestate.numMoves))==1}" ></ng-lottie>
+
+<div style="margin-top:-20px" [ngClass]="{'bronzeTxt':userData.settings.easyMode,'silTxt':gamestate.numMoves>=medalThresh[0] && !userData.settings.easyMode ,'goldTxt':gamestate.numMoves<medalThresh[0] && !userData.settings.easyMode }" *ngIf="gamestate.numMoves<medalThresh[1] && !gamestate.lvlWon && !gamestate.ezAttempt">
+moves left <span>to <br>earn a <span *ngIf="gamestate.numMoves<medalThresh[0] && !userData.settings.easyMode">gold</span> <span *ngIf="gamestate.numMoves>=medalThresh[0] && !userData.settings.easyMode">silver</span> <span *ngIf="userData.settings.easyMode">bronze</span> medal</span>
+</div>
+<div class="bronzeTxt" style="margin-top:-20px" *ngIf="(gamestate.numMoves>=medalThresh[1] || gamestate.ezAttempt) && !gamestate.lvlWon">
+Complete puzzle to<br>
+earn a bronze medal
+</div>
+<div style="margin-top:-25px;margin-bottom:-50px" [ngClass]="{'silTxt':gamestate.numMoves>medalThresh[0] && gamestate.numMoves<=medalThresh[1] && !gamestate.ezAttempt,'goldTxt':gamestate.numMoves<=medalThresh[0] && !gamestate.ezAttempt,'bronzeTxt':gamestate.numMoves>medalThresh[1] || gamestate.ezAttempt}" *ngIf="gamestate.lvlWon">
+<span [hidden]="gamestate.replay">
+{{atta}} You earned<br>
+ your {{ userData.medals[(gamestate.ezAttempt?0:(gamestate.numMoves<=medalThresh[0]?2:(gamestate.numMoves>medalThresh[1]?0:1)))] | ordinalDate}} 
+ </span>
+<span [hidden]="!gamestate.replay">You have already earned <br>a </span>
+    <span *ngIf="gamestate.numMoves<=medalThresh[0] && !gamestate.ezAttempt">gold</span> <span *ngIf="gamestate.numMoves>medalThresh[0] && gamestate.numMoves<=medalThresh[1] && !gamestate.ezAttempt">silver</span><span *ngIf="gamestate.numMoves>medalThresh[1] || gamestate.ezAttempt">bronze</span> medal
+
+
+<br><br>
+
+<ion-button (click)="genShare()" [hidden]="gamestate.replay" [ngClass]="{'hidden':userData.tutorial>-1 && userData.tutorial<11,'animate__animated animate__pulse animate__infinite':userData.tutorial==35,'bronzeTxt':gamestate.numMoves>medalThresh[1] || gamestate.ezAttempt,'silTxt':gamestate.numMoves>medalThresh[0] && gamestate.numMoves<medalThresh[1] && !gamestate.ezAttempt,'goldTxt':gamestate.numMoves<=medalThresh[0] && !gamestate.ezAttempt}" class="lvlBtns" style="margin-top:-5px;margin-right:15px" id="shareBtn" color="dark" fill="outline" size="large"><ion-icon style="margin-left:2px" slot="end" [ngClass]="{'iosAdj':iOS}" [name]="iOS?'share-outline':'share-social-outline'"></ion-icon>SHARE</ion-button>
+
+<ion-button id="nxtPuzz" [hidden]="gamestate.replay" (click)="nextPuzzle()" class="lvlBtns" [ngClass]="{'halfopac':userData.tutorial==35,'hidden':userData.tutorial>-1 && userData.tutorial<11,'animate__animated animate__pulse animate__infinite':userData.tutorial!==35,'bronzeTxt':gamestate.numMoves>medalThresh[1] || gamestate.ezAttempt,'silTxt':gamestate.numMoves>medalThresh[0] && gamestate.numMoves<medalThresh[1] && !gamestate.ezAttempt,'goldTxt':gamestate.numMoves<=medalThresh[0] && !gamestate.ezAttempt}" id="nxtBtn" style="margin-top:-5px;margin-left:10px" color="dark" fill="outline" size="large"><ion-icon slot="end" name="chevron-forward-outline"></ion-icon><b>NEXT</b></ion-button>
+<br><br>
+
+
+</div>
+
+
+
+</div>
+
+</div>
+</div>
+<!--
+<div style="text-align: right; padding: 20px">0.0.6</div>
+</div>
+-->
+
+
+
+
+<div class="area hardware-accelerated"  [ngClass]="{'areaAnim':userData.color.anim!=='None','blackFilter':userData.color.bck=='-1'}" [style]="'filter:hue-rotate('+(userData.color.bck-35)+'deg)'">
+
+<svg *ngIf="userData.color.anim=='Lines'" class="circles" class="linesBck" version="1.1" id="home-anim" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+     viewBox="0 0 1820 1080" style="enable-background:new 0 0 1820 1080;" xml:space="preserve">
+
+<g id="home">
+    <defs>
+        <rect id="masque" y="0.4" width="1820" height="1080"/>
+    </defs>
+    <clipPath id="cache">
+        <use xlink:href="#masque"  style="overflow:visible;"/>
+    </clipPath>
+     <g id="light-blue">
+        <line x1="1166" y1="88" x2="1012" y2="412"/>
+        <line x1="530" y1="594" x2="776" y2="848"/>
+        <line x1="1204" y1="700" x2="949" y2="955"/>
+
+        <line x1="1440" y1="364" x2="885" y2="519"/>
+   
+        <line x1="656" y1="207" x2="580" y2="461"/>
+    </g>
+    
+   <g id="red">  
+        <line x1="700" y1="249" x2="392" y2="95"/>   
+        <line x1="1120" y1="647" x2="1374.6" y2="200"/>
+        <line x1="321" y1="726" x2="875.9" y2="771"/>      
+        <line x1="557" y1="490" x2="812" y2="335"/>   
+    </g>
+    <!--
+    <g id="blue">
+         Keep only every fourth line 
+        <line x1="225.8" y1="1151" x2="534.9" y2="841.9"/>
+        <line x1="661.9" y1="714.9" x2="971" y2="405.9"/>
+        <line x1="1098" y1="278.8" x2="1407.1" y2="-30.2"/>
+        <line x1="699.3" y1="1057.6" x2="1008.4" y2="748.5"/>
+        <line x1="1135.4" y1="621.5" x2="1444.5" y2="312.4"/>
+        <line x1="1571.5" y1="185.4" x2="1880.6" y2="-123.6"/>
+        <line x1="1608.9" y1="528.1" x2="1918" y2="219"/>
+        <line x1="1655.1" y1="862" x2="1964.1" y2="553"/>
+       
+    </g> -->
+</g>
+</svg>
+
+
+
+<div class="infinity hardware-accelerated" *ngIf="userData.color.anim=='Infinity'">
+</div>
+
+<div class="el hardware-accelerated" *ngIf="userData.color.anim=='Shimmer'">
+</div>
+
+
+
+            <ul *ngIf="userData.color.anim=='Numbers'" class="circles hardware-accelerated">
+
+                    <li class="bckTrans">0</li>
+                    <li class="bckTrans">1</li>
+                    <li class="bckTrans">2</li>
+                    <li class="bckTrans">3</li>
+                    <li class="bckTrans">4</li>
+                    <li class="bckTrans">5</li>
+                    <li class="bckTrans">6</li>
+                    <li class="bckTrans">7</li>
+                    <li class="bckTrans">8</li>
+                    <li class="bckTrans">9</li> 
+            </ul>
+
+    <ul *ngIf="userData.color.anim=='Equals+Squares'" class="circles hardware-accelerated">
+
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li class="equalsBckg">=</li>
+                    <!--
+                    <li></li>
+
+                   
+                    <li class="equalsBckg">=</li>
+                    <li></li>
+                    <li></li>
+                -->
+               
+            </ul>
+</div >

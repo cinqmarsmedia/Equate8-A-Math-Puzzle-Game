@@ -1,0 +1,933 @@
+/*
+ * App Global CSS
+ * ----------------------------------------------------------------------------
+ * Put style rules here that you want to apply globally. These styles are for
+ * the entire app and not just one component. Additionally, this file can be
+ * used as an entry point to import other CSS/Sass files to be included in the
+ * output CSS.
+ * For more information on global stylesheets, visit the documentation:
+ * https://ionicframework.com/docs/layout/global-stylesheets
+ */
+
+/* global.scss (must be global, not component-scoped) */
+@media (max-width: 340px) {
+  /* optional: add a class to scope just one menu */
+  ion-menu.menu-override::part(container) {
+    --width: 300px !important;
+    width: 300px !important; /* extra safety */
+  }
+}
+
+.iosAdj{
+    margin-top:-4px !important
+}
+
+.menuStreak{
+position:absolute;bottom:35px;text-align:center;right:0;left:0;margin:auto;
+}
+
+
+.redForce{
+    color:rgb(225,0,0) !important;
+}
+.opVert{
+    vertical-align:-3px
+}
+
+* {
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+    -webkit-tap-highlight-color: transparent;
+
+}
+
+/*android Claude*/ 
+/* Add these Android-specific fixes to your home.page.scss */
+
+/* Android touch handling improvements */
+/* Android touch handling improvements */
+.num-cell {
+    -webkit-touch-callout: none !important;
+    -webkit-user-select: none !important;
+    -khtml-user-select: none !important;
+    -moz-user-select: none !important;
+    -ms-user-select: none !important;
+    user-select: none !important;
+    -webkit-tap-highlight-color: transparent !important;
+    
+    /* Ensure proper touch handling on Android */
+    touch-action: none !important;
+    -webkit-touch-action: none !important;
+}
+
+.numMovesCont{
+    margin-left:-14px
+}
+
+
+
+/* Ensure clickable elements work on Android */
+.num-cell {
+    cursor: pointer;
+    position: relative;
+    
+    /* Create a larger touch target for Android */
+    &::after {
+        content: '';
+        position: absolute;
+        top: -5px;
+        left: -5px;
+        right: -5px;
+        bottom: -5px;
+        z-index: 1;
+    }
+}
+
+/* Prevent Android WebView bounce/overscroll */
+body {
+    overscroll-behavior: none;
+    -webkit-overscroll-behavior: none;
+}
+
+/* Fix for Android transform rendering */
+.grid-cell {
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+}
+
+/* Android clone element optimization */
+[touchSwappable] {
+    will-change: transform;
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+}
+/*-----*/
+
+@import url('assets/animate.min.css');
+@font-face { font-family: Candal; src: url('assets/Candal-Regular.ttf'); }
+@font-face {
+  font-family: 'Geist';
+  src: url('assets/Geist-Regular.ttf');
+}
+
+
+.titlebarDrag{
+position:absolute;
+top:0;
+-webkit-app-region: drag;
+height: 20px;
+width: 100vw;
+cursor:move !important;
+}
+
+
+
+
+.animate__animated,
+app-popover-content,
+ng-lottie,
+.hardware-accelerated,
+ion-menu,
+svg,
+canvas
+{
+  -webkit-transform: translateZ(0);
+  -moz-transform: translateZ(0);
+  -ms-transform: translateZ(0);
+  -o-transform: translateZ(0);
+  transform: translateZ(0);
+  -webkit-backface-visibility: hidden;
+  -moz-backface-visibility: hidden;
+  -ms-backface-visibility: hidden;
+  backface-visibility: hidden;
+  -webkit-perspective: 1000;
+  -moz-perspective: 1000;
+  -ms-perspective: 1000;
+  perspective: 1000;  
+  will-change: transform;
+}
+
+ng-lottie {
+  transform: translateZ(0);
+  will-change: transform;
+  min-height: 1px;
+  min-width: 1px;
+}
+
+ion-content:not(.active),
+.offscreen-element {
+  content-visibility: auto;
+  contain: strict;
+  will-change: auto;
+}
+
+
+
+/* Background data (Original source: https://subtlepatterns.com/grid-me/) */
+$bg-url: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAAiklEQVR4nO3Q0QnDQAwEUV1K0JXo9BSDVGLsFtZFOHDrMA/0v6Ox7x9t2zvO84inypwRkqKqJCmeelWlcRxfZc6x+qt3vVYP+BVC3BDihhA3hLghxA0hbghxQ4gbQtwQ4oYQN4S4IcQNIW4IcUOIG0LcEOKGEDeEuCHEDSFu/ickc47u1uohd3S3LvxGpjwPR2xpAAAAAElFTkSuQmCC";
+$bg-width: 50px;
+$bg-height: 50px;
+
+/* Animations */
+@-webkit-keyframes bg-scrolling-reverse {
+  100% { background-position: $bg-width $bg-height; }
+}
+@-moz-keyframes    bg-scrolling-reverse {
+  100% { background-position: $bg-width $bg-height; }
+}
+@-o-keyframes      bg-scrolling-reverse {
+  100% { background-position: $bg-width $bg-height; }
+}
+@keyframes         bg-scrolling-reverse {
+  100% { background-position: $bg-width $bg-height; }
+}
+
+@-webkit-keyframes bg-scrolling {
+  0% { background-position: $bg-width $bg-height; }
+}
+@-moz-keyframes    bg-scrolling {
+  0% { background-position: $bg-width $bg-height; }
+}
+@-o-keyframes      bg-scrolling {
+  0% { background-position: $bg-width $bg-height; }
+}
+@keyframes         bg-scrolling {
+  0% { background-position: $bg-width $bg-height; }
+}
+
+/* Main styles */
+.infinity {
+z-index:99999;
+height:100vh;
+width:100vw;
+  opacity:.05;
+ // font: 400 16px/1.5 exo, ubuntu, "segoe ui", helvetica, arial, sans-serif;
+  text-align: center;
+  /* img size is 50x50 */
+  background: url($bg-url) repeat 0 0;
+  
+  -webkit-animation: bg-scrolling-reverse .92s infinite; /* Safari 4+ */
+  -moz-animation:    bg-scrolling-reverse .92s infinite; /* Fx 5+ */
+  -o-animation:      bg-scrolling-reverse .92s infinite; /* Opera 12+ */
+  animation:         bg-scrolling-reverse .92s infinite; /* IE 10+ */
+  -webkit-animation-timing-function: linear;
+  -moz-animation-timing-function:    linear;
+  -o-animation-timing-function:      linear;
+  animation-timing-function:         linear;
+  
+
+}
+
+
+.linesBck{
+    height:100vh !important;
+    min-width:100vw !important;
+     position: absolute; /* Position it absolutely */
+  left: 50%; /* Move to the center */
+  top:50%;
+
+  transform: translate(-50%, -50%)  translateZ(0) !important; /* Center it perfectly */
+
+
+  will-change: opacity;
+}
+#home {
+
+  clip-path: url(#cache);
+}
+
+#red {
+  fill: none;
+  opacity: 0.15;
+  stroke: #CE1B5F;
+  stroke-width: 8; /* Reduced from 12 */
+  stroke-miterlimit: 10;
+  animation: show 15s; /* Slowed down from 4s to 6s */
+
+}
+
+#blue {
+  fill: none;
+  opacity: 0.15;
+  stroke: #06A1C4;
+  stroke-width: 8; /* Reduced from 12 */
+  stroke-miterlimit: 10;
+
+}
+
+#light-blue {
+  fill: none;
+  opacity: 0.15;
+  stroke: #06A1C4;
+  stroke-width: 4; /* Reduced from 6 */
+  stroke-miterlimit: 10;
+  stroke-dasharray: 200;
+  stroke-dashoffset: 800;
+  animation: draw 25s; /* Slowed down from 4s to 6s */
+  animation-fill-mode: forwards;
+  animation-iteration-count: infinite;
+  animation-timing-function: ease-in-out;    
+}
+@keyframes draw {
+  to {
+    stroke-dashoffset: 0;
+ }
+    }
+
+@keyframes show {
+  0% {
+    opacity: 0.15;
+ }
+  50% {
+    opacity: 0.2;
+ }
+  100% {
+    opacity: 0.15;
+ }
+    }
+
+
+
+
+
+* {
+  box-sizing: border-box;
+}
+
+:root {
+  --size: 20px;
+}
+
+body {
+    margin-top:0px !important;
+  display: grid;
+  place-items: center;
+  min-height: 100vh;
+  background: hsl(0 0% 6%);
+}
+
+.el {
+  background: conic-gradient(from 180deg at 50% 70%,hsla(0,0%,98%,1) 0deg,#eec32d 72.0000010728836deg,#ec4b4b 144.0000021457672deg,#709ab9 216.00000858306885deg,#4dffbf 288.0000042915344deg,hsla(0,0%,98%,1) 1turn);
+  width: 100%;
+  height: 100%;
+  mask:
+    radial-gradient(circle at 50% 50%, white 2px, transparent 2.5px) 50% 50% / var(--size) var(--size),
+    url("https://assets.codepen.io/605876/noise-mask.png") 256px 50% / 256px 256px;
+  mask-composite: intersect;
+  animation: flicker 20s infinite linear;
+}
+
+h1 {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  translate: -50% -50%;
+  margin: 0;
+  font-size: clamp(6rem, 8vw + 1rem, 14rem);
+  font-family: "Geist", sans-serif;
+  font-weight: 140;
+  color: hsl(0 0% 2%);
+  mix-blend-mode: soft-light;
+/*   -webkit-text-stroke: 2px hsl(0 0% 100% / 0.95); */
+  filter: drop-shadow(0 0 2px white);
+  text-shadow: 2px 2px white;
+}
+
+@keyframes flicker {
+  to {
+    mask-position: 50% 50%, 0 50%;
+  }
+}
+
+
+html{
+    height:100vh !important;
+}
+
+ .ion-page{
+  color:white !important
+}
+
+
+.noPointer{
+  pointer-events:none !important;
+}
+
+.nosnap{
+    cursor: not-allowed !important;
+}
+
+
+.noTouch{
+    pointer-events:none !important;
+}
+.lvlBtns{
+  font-size:18px !important;
+  font-weight:800 !important;
+  border-width:3px;
+  --background: rgb(30,30,30) !important;
+  --border-width:3px !important;
+}
+
+.goldTxt{
+--ion-color-base:rgb(255,230,78) !important;
+}
+
+
+.silTxt{
+    --ion-color-base:rgb(177,177,177) !important;
+}
+
+.bronzeTxt{
+    --ion-color-base:rgb(220,170,63) !important;
+}
+
+ion-label, ion-select{
+    margin-left:10px !important;
+    font-weight:bold;
+}
+
+
+
+.iosMobile{
+ width:100%;height:94.6vh;margin-top:2.7vh;position:absolute;
+}
+
+.iosHeader{
+  margin-top:3.6vh;
+}
+
+ion-item-divider{
+    height:25px !important;
+    min-height:25px !important;
+}
+
+ion-item{
+  --min-height: 43px !important;
+  display: flex;
+  align-items: center;
+    --background:transparent !important;
+    height:43px !important;
+
+    border-bottom:1px solid rgba(255,255,255,0.1)
+
+}
+
+
+.themes{
+
+ion-item-divider{
+    min-height:25px !important;
+
+}
+
+ion-item{
+    --background:transparent !important;
+    --min-height:20px !important;
+
+}
+
+}
+
+.themeDiv{
+  opacity:0.5;
+  height:20px !important;
+  display:none !important
+}
+
+
+.themeMenuItem{
+    margin-top:-6px;
+    font-size:15px;
+    height:50px !important;
+
+
+ion-icon{
+    margin-right:14px !important;
+}
+}
+
+ion-menu{
+    --background:transparent !important
+}
+
+ion-popover {
+  //margin-top:-200px;
+  --background: rgba(25, 25, 25, .97);
+}
+
+
+
+.sharing{
+//--background: rgba(0,0,0,0) !important;
+--width:50vh !important;
+//margin-top:-25vh !important;
+--max-width:90vw !important;
+}
+
+
+.menuContent{
+    --background:rgb(25,25,25,.99) !important
+}
+
+.menuIcon{
+    position:absolute;right:20px;top:27px;font-size:45px;cursor:pointer
+}
+
+.ion-page{
+    overflow:hidden !important;
+}
+
+
+
+body{
+    font-family: 'Exo', sans-serif;
+}
+
+.vertTweak{
+    vertical-align:-1px !important
+}
+
+.ninetydeg{
+transform: rotate(90deg) !important;
+}
+
+.rotc{
+transform: rotate(45deg) !important
+}
+
+.rotcc{
+transform: rotate(-45deg) !important;
+}
+
+.notequal{
+    width:40px !important;
+}
+
+.context {
+    width: 100%;
+    position: absolute;
+    top:50vh;
+    
+}
+
+.context h1{
+    text-align: center;
+    color: #fff;
+    font-size: 50px;
+}
+
+
+
+.svg{
+ //filter: invert(100%);
+ display:block
+}
+
+
+
+.area{
+    background: rgb(32,30,53);  
+    //background: -webkit-linear-gradient(to left, #8f94fb, #4e54c8);  
+    //background:#341539;
+    //background: -webkit-linear-gradient(to left, #341539, #4e54c8);  
+    top:0;
+    width: 100%;
+    height:100vh !important;
+    position:absolute;
+
+   
+}
+
+.areaAnim{
+       -webkit-animation: newtheme 71s linear infinite !important;
+          animation: newtheme 71s linear infinite !important; 
+}
+
+  #smallStreak{
+    display:block !important;
+  }
+
+  #bigStreak{
+    display:none !important;
+  }
+
+@media (min-height: 750px){
+
+
+ion-item-divider{
+    height:30px !important;
+    min-height:30px !important;
+}
+
+ion-item{
+    --background:transparent !important;
+    --min-height:55px !important;
+
+}
+
+  #smallStreak{
+    display:none !important;
+  }
+
+  #bigStreak{
+    display:block !important;
+  }
+}
+
+@-webkit-keyframes newtheme {
+  0% {
+    background: #231c35;
+  }
+  16% {
+    background: #242039;
+  }
+  33% {
+    background: #2a2b47;
+  }
+  60% {
+    background: #341539;
+  }
+  83% {
+    background: #484564;
+  }
+  100% {
+    background: #231c35;
+  }
+}
+
+@keyframes newtheme {
+  0% {
+    background: #231c35;
+  }
+  16% {
+    background: #242039;
+  }
+  33% {
+    background: #2a2b47;
+  }
+  60% {
+    background: #341539;
+  }
+  83% {
+    background: #484564;
+  }
+  100% {
+    background: #231c35;
+  }
+}
+@-webkit-keyframes background {
+  0% {
+    -webkit-transform: rotate(0deg);
+            transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+            transform: rotate(360deg);
+  }
+}
+@keyframes background {
+  0% {
+    -webkit-transform: rotate(0deg);
+            transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+            transform: rotate(360deg);
+  }
+}
+
+
+
+
+
+.circles{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    font-size:100px;
+    opacity:.7;
+            will-change: transform;
+        transform: translateZ(0);
+}
+
+.equalsBckg{
+    background:transparent !important;
+    opacity:0.2 !important;
+}
+
+.circles li{
+    position: absolute;
+    display: block;
+    list-style: none;
+    width: 20px;
+    height: 20px;
+    background: rgba(255, 255, 255, 0.2);
+    animation: animate 25s linear infinite;
+    bottom: -150px;
+    border-radius:10%;
+     /* Performance optimizations */
+        will-change: transform, opacity;
+        transform: translateZ(0); /* Force hardware acceleration */
+        backface-visibility: hidden; /* Prevent flickering */
+        
+        /* Use transform instead of animating individual properties */
+        animation-timing-function: linear;
+        animation-iteration-count: infinite;
+    
+}
+
+.circles li:nth-child(1){
+    left: 40%;
+    width: 90px;
+    height: 90px;
+    animation-delay: 0s;
+}
+
+
+.circles li:nth-child(2){
+    left: 10%;
+    width: 60px !important;
+    height: 60px !important;
+    animation-delay: 2s;
+    animation-duration: 14s;
+}
+
+.circles li:nth-child(3){
+    left: 70%;
+    width: 70px !important;
+    height: 70px !important;
+    animation-delay: 4s;
+}
+
+.circles li:nth-child(4){
+    left: 30% !important;
+    width: 120px !important;
+    height: 120px !important;
+    animation-delay: 0s;
+    animation-duration: 18s;
+}
+
+.circles li:nth-child(5){
+    left: 65%;
+    width: 120px !important;
+    height: 120px !important;
+    animation-delay: 0s;
+}
+/*
+.circles li:nth-child(6){
+    left: 75%;
+    width: 110px;
+    height: 110px;
+    animation-delay: 3s;
+}
+
+.circles li:nth-child(1){
+    left: 35%;
+    width: 150px;
+    height: 150px;
+    animation-delay: 0s;
+}
+
+.circles li:nth-child(8){
+    left: 50%;
+    width: 25px;
+    height: 25px;
+    animation-delay: 15s;
+    animation-duration: 45s;
+}
+
+.circles li:nth-child(9){
+    left: 20%;
+    width: 15px;
+    height: 15px;
+    animation-delay: 2s;
+    animation-duration: 35s;
+}
+
+.circles li:nth-child(10){
+    left: 85%;
+    width: 150px;
+    height: 150px;
+    animation-delay: 0s;
+    animation-duration: 11s;
+}
+*/
+
+
+@keyframes animate {
+        0% {
+            transform: translateY(0) rotate(0deg) translateZ(0);
+            opacity: 1;
+        }
+        100% {
+            transform: translateY(-1000px) rotate(720deg) translateZ(0);
+            opacity: 0;
+        }
+    }
+
+ .particle{
+    zoom:1;
+    margin-top:2vmin;
+ }
+
+ #confetti-canvas{
+    position:absolute !important;
+ }
+/* Core CSS required for Ionic components to work properly */
+@import "~@ionic/angular/css/core.css";
+
+/* Basic CSS for apps built with Ionic */
+@import "~@ionic/angular/css/normalize.css";
+@import "~@ionic/angular/css/structure.css";
+@import "~@ionic/angular/css/typography.css";
+@import '~@ionic/angular/css/display.css';
+
+/* Optional CSS utils that can be commented out */
+@import "~@ionic/angular/css/padding.css";
+@import "~@ionic/angular/css/float-elements.css";
+@import "~@ionic/angular/css/text-alignment.css";
+@import "~@ionic/angular/css/text-transformation.css";
+@import "~@ionic/angular/css/flex-utils.css";
+
+
+.area{
+    z-index:-99999;
+}
+
+.circles{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    padding:0 !important;
+    margin:0 !important;
+}
+
+.circles li{
+    position: absolute;
+    display: block;
+    list-style: none;
+    width: 20px;
+    height: 20px;
+    background: rgba(255, 255, 255, 0.2);
+    animation: animate 25s linear infinite;
+    bottom: -150px;
+
+    
+}
+
+.circles li:nth-child(1){
+    left: 25%;
+    width: 80px;
+    height: 80px;
+    animation-delay: 0s;
+}
+
+
+.circles li:nth-child(2){
+    left: 10%;
+    width: 20px;
+    height: 20px;
+    animation-delay: 2s;
+    animation-duration: 12s;
+}
+
+.circles li:nth-child(3){
+    left: 70%;
+    width: 20px;
+    height: 20px;
+    animation-delay: 4s;
+}
+
+.circles li:nth-child(4){
+    left: 40%;
+    width: 60px;
+    height: 60px;
+    animation-delay: 0s;
+    animation-duration: 18s;
+}
+
+.circles li:nth-child(5){
+    left: 65%;
+    width: 20px;
+    height: 20px;
+    animation-delay: 0s;
+}
+
+.circles li:nth-child(6){
+    left: 75%;
+    width: 110px;
+    height: 110px;
+    animation-delay: 3s;
+}
+
+.circles li:nth-child(7){
+    left: 35%;
+    width: 150px;
+    height: 150px;
+    animation-delay: 7s;
+}
+
+.circles li:nth-child(8){
+    left: 50%;
+    width: 25px;
+    height: 25px;
+    animation-delay: 15s;
+    animation-duration: 45s;
+}
+
+.circles li:nth-child(9){
+    left: 20%;
+    width: 15px;
+    height: 15px;
+    animation-delay: 2s;
+    animation-duration: 35s;
+}
+
+.circles li:nth-child(10){
+    left: 85%;
+    width: 150px;
+    height: 150px;
+    animation-delay: 0s;
+    animation-duration: 11s;
+}
+
+.lottie-anim{
+  will-change: transform !important;
+  transform: translateZ(0) !important;
+  backface-visibility: hidden !important;
+  -webkit-backface-visibility: hidden !important;
+}
+/*
+ng-lottie {
+  //transform:scale(1.5) !important
+}
+*/
+
+
+ion-menu{
+    //--width: 300px !important; /* your desired value */
+  }
+
+
+.numMovesCanvas{
+    margin-left:-43px !important;
+    //vertical-align:1px !important
+}
+
+.canvasScale{
+    //transform:scale(1.5) !important;
+}
+
+.canvasScaleMoves{
+    //transform:scale(1.5) !important;
+}
+
